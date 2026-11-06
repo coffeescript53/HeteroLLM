@@ -1,0 +1,12 @@
+{
+  "model": "../models/llama33-70b/Llama-3.3-70B-Instruct-Q4_K_M.gguf",
+  "bench": "../llama.cpp/build-mixed/bin/llama-bench",
+  "cli": "../llama.cpp/build-mixed/bin/llama-cli",
+  "source": "../llama.cpp",
+  "output": "../runs/llama33-70b",
+  "model_sha256": "32df3baccb556f9840059b2528b2dee4d3d516b24afdfb9d0c56ff5f63e3a664",
+  "model_size_bytes": 42520398816,
+  "source_revision": "5e03bdd8700948b9c41c54dd1b00f28a2aebc03f",
+  "devices": {"CUDA0": "0000:05:00.0", "ROCm0": "0000:03:00.0"},
+  "environment": {"LD_LIBRARY_PATH": "/opt/rocm/core-10.0/lib"}
+}

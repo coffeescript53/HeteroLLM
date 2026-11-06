@@ -1,0 +1,9 @@
+# Placement planning and the unused tuning path
+
+The package includes GGUF tensor accounting, capacity-screened candidate generation and an earlier bounded empirical search path. These are CPU-tested software capabilities. The completed GPU study used separately reviewed fixed C0/C1/C2 adapters; it did not execute a placement-ratio sweep or validate an automatically selected optimum.
+
+`gguf.py` groups tensor storage by transformer/output layer. `planner.py` estimates contiguous ownership, F16 KV needs and reserves using the pinned allocator rule. Available VRAM and host RAM gate proposals; estimates do not replace actual buffer and placement checks. `runtime.py` generates fixed child arguments; `analysis.py` compares compatible observations. The generic CLI's execution modes are different experiments and must not substitute for a reviewed stage contract.
+
+As of 3 November 2026, **no specific source-level optimization is yet proven or ready to implement**. C5's CUDA-heavier 3:2 placement passed a one-process capacity screen, but the strict E/P numerical comparison failed. The later exploratory quality retry stopped during E on an AMD temperature limit; P did not run. The twelve-process E/P performance study remains blocked. These experiments tested an existing CLI control; they did not implement or validate an automatic placement policy.
+
+The portfolio presents fixed configuration baselines, strict supervision, a demonstrated trace-recorder repair, validated instrumentation and careful attribution. See [decision](OPTIMIZATION_DECISION.md), [contributions](CONTRIBUTIONS.md) and [results](RESULTS.md). The [C5 proposal](C5_PLACEMENT_PROPOSAL.md) is historical rationale. C5 remains an unfinished, separately authorized research milestone; no additional GPU workload is needed to reproduce the saved C4 portfolio results.

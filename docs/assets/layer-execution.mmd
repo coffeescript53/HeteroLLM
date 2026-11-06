@@ -1,0 +1,6 @@
+flowchart LR
+    H[Host: tokens, embeddings, scheduler] --> C[CUDA: transformer blocks 0–40]
+    C --> S[Host-staged boundary activations]
+    S --> R[ROCm: blocks 41–79 and output]
+    R --> O[Host: logits and next-token dependency]
+    O -. next TG iteration .-> H

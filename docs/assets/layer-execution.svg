@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="470" viewBox="0 0 1200 470" role="img" aria-labelledby="title desc">
+<title id="title">HeteroLLM equal mixed layer execution</title><desc id="desc">Host scheduler submits CUDA blocks zero through forty, boundary activations are staged through host memory, ROCm executes blocks forty-one through seventy-nine and output. Token dependency returns to the host. CPU routing and completed same-device events observe this path without proving kernel-only time or precise cross-vendor overlap.</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#465565"/></marker></defs>
+<rect width="1200" height="470" fill="#f8fafc"/>
+<g font-family="DejaVu Sans,Arial,sans-serif" fill="#142333">
+<text x="40" y="45" font-size="25" font-weight="bold">One model, two backend memories, explicit dependencies</text>
+<text x="40" y="75" font-size="15">E: upstream layer split 1/1 • C0 observed map, corroborated by quiet C1 allocations</text>
+<rect x="40" y="115" width="210" height="110" rx="8" fill="#e2e8f0" stroke="#64748b"/>
+<text x="62" y="146" font-size="17" font-weight="bold">Host + GGML</text><text x="62" y="174" font-size="15">Tokens / embeddings</text><text x="62" y="198" font-size="15">Dependency scheduler</text>
+<rect x="290" y="115" width="240" height="110" rx="8" fill="#e7f2e6" stroke="#46814b"/>
+<text x="312" y="146" font-size="17" font-weight="bold">CUDA · RTX 5090</text><text x="312" y="174" font-size="15">Transformer blocks 0–40</text><text x="312" y="198" font-size="15">41 blocks in device memory</text>
+<rect x="570" y="115" width="210" height="110" rx="8" fill="#fff4d9" stroke="#a27c20"/>
+<text x="590" y="146" font-size="17" font-weight="bold">Host staging</text><text x="590" y="174" font-size="15">Boundary activations</text><text x="590" y="198" font-size="15">Get → host → set</text>
+<rect x="820" y="115" width="340" height="110" rx="8" fill="#e2edfb" stroke="#4676a8"/>
+<text x="842" y="146" font-size="17" font-weight="bold">ROCm · Radeon AI PRO R9700</text><text x="842" y="174" font-size="15">Transformer blocks 41–79 + output</text><text x="842" y="198" font-size="15">39 blocks + output in device memory</text>
+<g stroke="#465565" stroke-width="2" fill="none" marker-end="url(#arrow)"><path d="M250 168 H284"/><path d="M530 168 H564"/><path d="M780 168 H814"/><path d="M990 225 V280 H145 V231"/></g>
+<text x="360" y="267" font-size="14">Logits / next TG token dependency; not a claim of cross-vendor overlap</text>
+<rect x="40" y="315" width="1120" height="90" rx="8" fill="white" stroke="#a9b5c2"/>
+<text x="60" y="343" font-size="17" font-weight="bold">HeteroLLM observation + supervision</text>
+<text x="60" y="368" font-size="15">CPU routing scopes • completed same-device events • phase/repetition identity • thermal/resource stops</text>
+<text x="60" y="391" font-size="15">Strict trace completeness, source/runtime identity, process cleanup and immutable evidence</text>
+<text x="40" y="440" font-size="14">No unified GPU memory. Event intervals may include waits/gaps; CPU synchronization is not wasted GPU time.</text>
+</g></svg>

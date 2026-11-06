@@ -1,0 +1,842 @@
+{
+  "datasets": {
+    "c1": {
+      "correlated_internal_samples": 72,
+      "independent_processes": 12,
+      "processes": [
+        {
+          "configuration": "E",
+          "ordinal": 1,
+          "process": "c1-01",
+          "round": 1,
+          "workloads": {
+            "pp512": {
+              "n_depth": 0,
+              "n_gen": 0,
+              "n_prompt": 512,
+              "samples_ns": [
+                708440879,
+                709335495,
+                712374886
+              ]
+            },
+            "tg128": {
+              "n_depth": 0,
+              "n_gen": 128,
+              "n_prompt": 0,
+              "samples_ns": [
+                7009244784,
+                6991832785,
+                6994519102
+              ]
+            }
+          }
+        },
+        {
+          "configuration": "D",
+          "ordinal": 2,
+          "process": "c1-02",
+          "round": 1,
+          "workloads": {
+            "pp512": {
+              "n_depth": 0,
+              "n_gen": 0,
+              "n_prompt": 512,
+              "samples_ns": [
+                727637854,
+                725928422,
+                725605830
+              ]
+            },
+            "tg128": {
+              "n_depth": 0,
+              "n_gen": 128,
+              "n_prompt": 0,
+              "samples_ns": [
+                7094200505,
+                7098938949,
+                7119122441
+              ]
+            }
+          }
+        },
+        {
+          "configuration": "A",
+          "ordinal": 3,
+          "process": "c1-03",
+          "round": 1,
+          "workloads": {
+            "pp512": {
+              "n_depth": 0,
+              "n_gen": 0,
+              "n_prompt": 512,
+              "samples_ns": [
+                2364966528,
+                2293588691,
+                2287464339
+              ]
+            },
+            "tg128": {
+              "n_depth": 0,
+              "n_gen": 128,
+              "n_prompt": 0,
+              "samples_ns": [
+                26269065005,
+                26499863232,
+                26389841100
+              ]
+            }
+          }
+        },
+        {
+          "configuration": "B",
+          "ordinal": 4,
+          "process": "c1-04",
+          "round": 1,
+          "workloads": {
+            "pp512": {
+              "n_depth": 0,
+              "n_gen": 0,
+              "n_prompt": 512,
+              "samples_ns": [
+                3011541824,
+                2901446275,
+                2920061731
+              ]
+            },
+            "tg128": {
+              "n_depth": 0,
+              "n_gen": 128,
+              "n_prompt": 0,
+              "samples_ns": [
+                28101795100,
+                27745282547,
+                27853558384
+              ]
+            }
+          }
+        },
+        {
+          "configuration": "D",
+          "ordinal": 5,
+          "process": "c1-05",
+          "round": 2,
+          "workloads": {
+            "pp512": {
+              "n_depth": 0,
+              "n_gen": 0,
+              "n_prompt": 512,
+              "samples_ns": [
+                724151422,
+                725229450,
+                728570392
+              ]
+            },
+            "tg128": {
+              "n_depth": 0,
+              "n_gen": 128,
+              "n_prompt": 0,
+              "samples_ns": [
+                7103831704,
+                7059737682,
+                7097482786
+              ]
+            }
+          }
+        },
+        {
+          "configuration": "B",
+          "ordinal": 6,
+          "process": "c1-06",
+          "round": 2,
+          "workloads": {
+            "pp512": {
+              "n_depth": 0,
+              "n_gen": 0,
+              "n_prompt": 512,
+              "samples_ns": [
+                2999857875,
+                2909660563,
+                2913243238
+              ]
+            },
+            "tg128": {
+              "n_depth": 0,
+              "n_gen": 128,
+              "n_prompt": 0,
+              "samples_ns": [
+                27884127026,
+                27786716992,
+                27869557042
+              ]
+            }
+          }
+        },
+        {
+          "configuration": "E",
+          "ordinal": 7,
+          "process": "c1-07",
+          "round": 2,
+          "workloads": {
+            "pp512": {
+              "n_depth": 0,
+              "n_gen": 0,
+              "n_prompt": 512,
+              "samples_ns": [
+                712414022,
+                716842072,
+                716254649
+              ]
+            },
+            "tg128": {
+              "n_depth": 0,
+              "n_gen": 128,
+              "n_prompt": 0,
+              "samples_ns": [
+                7012674534,
+                6996053471,
+                7000883693
+              ]
+            }
+          }
+        },
+        {
+          "configuration": "A",
+          "ordinal": 8,
+          "process": "c1-08",
+          "round": 2,
+          "workloads": {
+            "pp512": {
+              "n_depth": 0,
+              "n_gen": 0,
+              "n_prompt": 512,
+              "samples_ns": [
+                2353227141,
+                2285251111,
+                2278234953
+              ]
+            },
+            "tg128": {
+              "n_depth": 0,
+              "n_gen": 128,
+              "n_prompt": 0,
+              "samples_ns": [
+                26270550667,
+                26420643105,
+                26252194397
+              ]
+            }
+          }
+        },
+        {
+          "configuration": "B",
+          "ordinal": 9,
+          "process": "c1-09",
+          "round": 3,
+          "workloads": {
+            "pp512": {
+              "n_depth": 0,
+              "n_gen": 0,
+              "n_prompt": 512,
+              "samples_ns": [
+                2985954017,
+                2930783004,
+                2913508867
+              ]
+            },
+            "tg128": {
+              "n_depth": 0,
+              "n_gen": 128,
+              "n_prompt": 0,
+              "samples_ns": [
+                27905755876,
+                27772223609,
+                27862129691
+              ]
+            }
+          }
+        },
+        {
+          "configuration": "A",
+          "ordinal": 10,
+          "process": "c1-10",
+          "round": 3,
+          "workloads": {
+            "pp512": {
+              "n_depth": 0,
+              "n_gen": 0,
+              "n_prompt": 512,
+              "samples_ns": [
+                2390663356,
+                2288959428,
+                2279251073
+              ]
+            },
+            "tg128": {
+              "n_depth": 0,
+              "n_gen": 128,
+              "n_prompt": 0,
+              "samples_ns": [
+                26311145084,
+                26442333566,
+                26271563759
+              ]
+            }
+          }
+        },
+        {
+          "configuration": "D",
+          "ordinal": 11,
+          "process": "c1-11",
+          "round": 3,
+          "workloads": {
+            "pp512": {
+              "n_depth": 0,
+              "n_gen": 0,
+              "n_prompt": 512,
+              "samples_ns": [
+                724537819,
+                723332571,
+                725898188
+              ]
+            },
+            "tg128": {
+              "n_depth": 0,
+              "n_gen": 128,
+              "n_prompt": 0,
+              "samples_ns": [
+                7066814651,
+                7074895965,
+                7102141959
+              ]
+            }
+          }
+        },
+        {
+          "configuration": "E",
+          "ordinal": 12,
+          "process": "c1-12",
+          "round": 3,
+          "workloads": {
+            "pp512": {
+              "n_depth": 0,
+              "n_gen": 0,
+              "n_prompt": 512,
+              "samples_ns": [
+                713471884,
+                714718062,
+                715340636
+              ]
+            },
+            "tg128": {
+              "n_depth": 0,
+              "n_gen": 128,
+              "n_prompt": 0,
+              "samples_ns": [
+                7006482068,
+                7001147592,
+                6999138909
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "c2_overhead": {
+      "correlated_internal_samples": 72,
+      "independent_processes": 12,
+      "processes": [
+        {
+          "arm": "U",
+          "block": 1,
+          "ordinal": 1,
+          "process": "c2_overhead-01",
+          "workloads": {
+            "pp512": {
+              "n_depth": 0,
+              "n_gen": 0,
+              "n_prompt": 512,
+              "samples_ns": [
+                713002286,
+                706553059,
+                713460490
+              ]
+            },
+            "tg128": {
+              "n_depth": 0,
+              "n_gen": 128,
+              "n_prompt": 0,
+              "samples_ns": [
+                7051118398,
+                7038141479,
+                7040161321
+              ]
+            }
+          }
+        },
+        {
+          "arm": "T",
+          "block": 1,
+          "ordinal": 2,
+          "process": "c2_overhead-02",
+          "workloads": {
+            "pp512": {
+              "n_depth": 0,
+              "n_gen": 0,
+              "n_prompt": 512,
+              "samples_ns": [
+                719929044,
+                715400105,
+                720908484
+              ]
+            },
+            "tg128": {
+              "n_depth": 0,
+              "n_gen": 128,
+              "n_prompt": 0,
+              "samples_ns": [
+                7132609096,
+                7105370051,
+                6934447512
+              ]
+            }
+          }
+        },
+        {
+          "arm": "T",
+          "block": 2,
+          "ordinal": 3,
+          "process": "c2_overhead-03",
+          "workloads": {
+            "pp512": {
+              "n_depth": 0,
+              "n_gen": 0,
+              "n_prompt": 512,
+              "samples_ns": [
+                707761996,
+                709062017,
+                706239932
+              ]
+            },
+            "tg128": {
+              "n_depth": 0,
+              "n_gen": 128,
+              "n_prompt": 0,
+              "samples_ns": [
+                6875252491,
+                6980827740,
+                6898214834
+              ]
+            }
+          }
+        },
+        {
+          "arm": "U",
+          "block": 2,
+          "ordinal": 4,
+          "process": "c2_overhead-04",
+          "workloads": {
+            "pp512": {
+              "n_depth": 0,
+              "n_gen": 0,
+              "n_prompt": 512,
+              "samples_ns": [
+                706622041,
+                705959255,
+                708611299
+              ]
+            },
+            "tg128": {
+              "n_depth": 0,
+              "n_gen": 128,
+              "n_prompt": 0,
+              "samples_ns": [
+                6875549172,
+                6860806576,
+                6851817641
+              ]
+            }
+          }
+        },
+        {
+          "arm": "U",
+          "block": 3,
+          "ordinal": 5,
+          "process": "c2_overhead-05",
+          "workloads": {
+            "pp512": {
+              "n_depth": 0,
+              "n_gen": 0,
+              "n_prompt": 512,
+              "samples_ns": [
+                706256177,
+                706913044,
+                708832941
+              ]
+            },
+            "tg128": {
+              "n_depth": 0,
+              "n_gen": 128,
+              "n_prompt": 0,
+              "samples_ns": [
+                6873984378,
+                6869032755,
+                6859717591
+              ]
+            }
+          }
+        },
+        {
+          "arm": "T",
+          "block": 3,
+          "ordinal": 6,
+          "process": "c2_overhead-06",
+          "workloads": {
+            "pp512": {
+              "n_depth": 0,
+              "n_gen": 0,
+              "n_prompt": 512,
+              "samples_ns": [
+                712927146,
+                711713364,
+                706602368
+              ]
+            },
+            "tg128": {
+              "n_depth": 0,
+              "n_gen": 128,
+              "n_prompt": 0,
+              "samples_ns": [
+                6907496760,
+                6928352999,
+                7002765256
+              ]
+            }
+          }
+        },
+        {
+          "arm": "T",
+          "block": 4,
+          "ordinal": 7,
+          "process": "c2_overhead-07",
+          "workloads": {
+            "pp512": {
+              "n_depth": 0,
+              "n_gen": 0,
+              "n_prompt": 512,
+              "samples_ns": [
+                708529866,
+                706235184,
+                707336434
+              ]
+            },
+            "tg128": {
+              "n_depth": 0,
+              "n_gen": 128,
+              "n_prompt": 0,
+              "samples_ns": [
+                6907623330,
+                6921329411,
+                6910587958
+              ]
+            }
+          }
+        },
+        {
+          "arm": "U",
+          "block": 4,
+          "ordinal": 8,
+          "process": "c2_overhead-08",
+          "workloads": {
+            "pp512": {
+              "n_depth": 0,
+              "n_gen": 0,
+              "n_prompt": 512,
+              "samples_ns": [
+                712268551,
+                711519947,
+                708906999
+              ]
+            },
+            "tg128": {
+              "n_depth": 0,
+              "n_gen": 128,
+              "n_prompt": 0,
+              "samples_ns": [
+                6893859195,
+                6886573697,
+                6901769516
+              ]
+            }
+          }
+        },
+        {
+          "arm": "U",
+          "block": 5,
+          "ordinal": 9,
+          "process": "c2_overhead-09",
+          "workloads": {
+            "pp512": {
+              "n_depth": 0,
+              "n_gen": 0,
+              "n_prompt": 512,
+              "samples_ns": [
+                715785144,
+                711081667,
+                706840125
+              ]
+            },
+            "tg128": {
+              "n_depth": 0,
+              "n_gen": 128,
+              "n_prompt": 0,
+              "samples_ns": [
+                6910226495,
+                6873317316,
+                6882218261
+              ]
+            }
+          }
+        },
+        {
+          "arm": "T",
+          "block": 5,
+          "ordinal": 10,
+          "process": "c2_overhead-10",
+          "workloads": {
+            "pp512": {
+              "n_depth": 0,
+              "n_gen": 0,
+              "n_prompt": 512,
+              "samples_ns": [
+                713637275,
+                706599207,
+                706784230
+              ]
+            },
+            "tg128": {
+              "n_depth": 0,
+              "n_gen": 128,
+              "n_prompt": 0,
+              "samples_ns": [
+                6946176301,
+                6925713497,
+                6904935872
+              ]
+            }
+          }
+        },
+        {
+          "arm": "T",
+          "block": 6,
+          "ordinal": 11,
+          "process": "c2_overhead-11",
+          "workloads": {
+            "pp512": {
+              "n_depth": 0,
+              "n_gen": 0,
+              "n_prompt": 512,
+              "samples_ns": [
+                706917848,
+                706475254,
+                711171225
+              ]
+            },
+            "tg128": {
+              "n_depth": 0,
+              "n_gen": 128,
+              "n_prompt": 0,
+              "samples_ns": [
+                6920866844,
+                6922850948,
+                6980964947
+              ]
+            }
+          }
+        },
+        {
+          "arm": "U",
+          "block": 6,
+          "ordinal": 12,
+          "process": "c2_overhead-12",
+          "workloads": {
+            "pp512": {
+              "n_depth": 0,
+              "n_gen": 0,
+              "n_prompt": 512,
+              "samples_ns": [
+                705748295,
+                714999845,
+                706908026
+              ]
+            },
+            "tg128": {
+              "n_depth": 0,
+              "n_gen": 128,
+              "n_prompt": 0,
+              "samples_ns": [
+                6900738268,
+                6893616228,
+                6893152845
+              ]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "duration_unit": "nanoseconds",
+  "expected_hash_origin": {
+    "c1": "C1 accepted PACKAGE_MANIFEST.json",
+    "c2_overhead": "C2 accepted RAW_EVIDENCE_INVENTORY.json"
+  },
+  "provenance": {
+    "c1-01": {
+      "archive": "stage-c1-memtotal-fixed-timed-20261025",
+      "bytes": 2695,
+      "file": "01-r1-mixed-equal/stdout.txt",
+      "sha256": "d7327b08d917f00c70dc7830a605d3cd17eade827b04fd956bc6f22e22d46e22"
+    },
+    "c1-02": {
+      "archive": "stage-c1-memtotal-fixed-timed-20261025",
+      "bytes": 2689,
+      "file": "02-r1-mixed-default/stdout.txt",
+      "sha256": "0f138f3fe27d88008aa413a0be163178506cdf06f4964590d5b707993942d412"
+    },
+    "c1-03": {
+      "archive": "stage-c1-memtotal-fixed-timed-20261025",
+      "bytes": 2684,
+      "file": "03-r1-cuda-only/stdout.txt",
+      "sha256": "4a308ffd10627cbbf3ae3e98068821d1f0694d62b7130f562ee36836ba503a47"
+    },
+    "c1-04": {
+      "archive": "stage-c1-memtotal-fixed-timed-20261025",
+      "bytes": 2683,
+      "file": "04-r1-rocm-only/stdout.txt",
+      "sha256": "ebd9c070f6848ea6ed8c4628e4b2a37ed319ea11e7de3095fcfa2770fbcac3e6"
+    },
+    "c1-05": {
+      "archive": "stage-c1-memtotal-fixed-timed-20261025",
+      "bytes": 2688,
+      "file": "05-r2-mixed-default/stdout.txt",
+      "sha256": "059f1f62807b75bd73b5d914fc9c011811492db1cb888d381749638f1640b48c"
+    },
+    "c1-06": {
+      "archive": "stage-c1-memtotal-fixed-timed-20261025",
+      "bytes": 2683,
+      "file": "06-r2-rocm-only/stdout.txt",
+      "sha256": "906b93ed36c385a83595b794a4ca0b83fa1cb966a3eea53246f45f8522f1a011"
+    },
+    "c1-07": {
+      "archive": "stage-c1-memtotal-fixed-timed-20261025",
+      "bytes": 2696,
+      "file": "07-r2-mixed-equal/stdout.txt",
+      "sha256": "05d9efff8f4845b0e5d4435ef55d4d0138fad7c4891088882bb2ad24a2c0d1cd"
+    },
+    "c1-08": {
+      "archive": "stage-c1-memtotal-fixed-timed-20261025",
+      "bytes": 2682,
+      "file": "08-r2-cuda-only/stdout.txt",
+      "sha256": "747b26ef2649b714db492cee9deebd79517ad535d074d4a420b5712fda9dc38d"
+    },
+    "c1-09": {
+      "archive": "stage-c1-memtotal-fixed-timed-20261025",
+      "bytes": 2683,
+      "file": "09-r3-rocm-only/stdout.txt",
+      "sha256": "5c54bde5da5826472889735bfd8f4358610c96e98085588a01186d74786e2eb5"
+    },
+    "c1-10": {
+      "archive": "stage-c1-memtotal-fixed-timed-20261025",
+      "bytes": 2683,
+      "file": "10-r3-cuda-only/stdout.txt",
+      "sha256": "9a3cfb3a9b33f57e46658b2facd32c798eeb5d4c94aed1d6730a0f7e08d66c01"
+    },
+    "c1-11": {
+      "archive": "stage-c1-memtotal-fixed-timed-20261025",
+      "bytes": 2689,
+      "file": "11-r3-mixed-default/stdout.txt",
+      "sha256": "70a8fed551cc0be7f6cd7ad9added6310a7835b985bf291cb2d54ba6073eeed3"
+    },
+    "c1-12": {
+      "archive": "stage-c1-memtotal-fixed-timed-20261025",
+      "bytes": 2696,
+      "file": "12-r3-mixed-equal/stdout.txt",
+      "sha256": "2080178454d472c67312f41683867ebb492b9810eee603a43d86ac2973fbbeb0"
+    },
+    "c2_overhead-01": {
+      "archive": "stage-c2-overhead-20261027",
+      "bytes": 2697,
+      "file": "01-block1-U/stdout.txt",
+      "sha256": "973b9791f54c5fb9e2090c868376f49f0378ae7f3dd4fd7835a6ef1b05201765"
+    },
+    "c2_overhead-02": {
+      "archive": "stage-c2-overhead-20261027",
+      "bytes": 2700,
+      "file": "02-block1-T/stdout.txt",
+      "sha256": "80246d156350317877570417f3e82dffaad96cf01be49304e58b6916627ef747"
+    },
+    "c2_overhead-03": {
+      "archive": "stage-c2-overhead-20261027",
+      "bytes": 2699,
+      "file": "03-block2-T/stdout.txt",
+      "sha256": "4798072b2e19137922f327cdbd183f0f3cf1dab0d8ffe527795b70acc0243ca5"
+    },
+    "c2_overhead-04": {
+      "archive": "stage-c2-overhead-20261027",
+      "bytes": 2698,
+      "file": "04-block2-U/stdout.txt",
+      "sha256": "7f3593f9f868a77a4249c1437aab1f3f4e7238f500796a38acc657435ee09aad"
+    },
+    "c2_overhead-05": {
+      "archive": "stage-c2-overhead-20261027",
+      "bytes": 2698,
+      "file": "05-block3-U/stdout.txt",
+      "sha256": "9c1e6d876020418aed22121b69ebd932388d39ac9c8c39a5d6290e43aaa574ee"
+    },
+    "c2_overhead-06": {
+      "archive": "stage-c2-overhead-20261027",
+      "bytes": 2699,
+      "file": "06-block3-T/stdout.txt",
+      "sha256": "73a6faaf466c15064796ad8f8b7670ee6bebb47f3f470208f81bcc7a3c42290f"
+    },
+    "c2_overhead-07": {
+      "archive": "stage-c2-overhead-20261027",
+      "bytes": 2698,
+      "file": "07-block4-T/stdout.txt",
+      "sha256": "b1e25b2f2914fb1485853690484bd143d1782d5a44d5964d53f525ce6e75812f"
+    },
+    "c2_overhead-08": {
+      "archive": "stage-c2-overhead-20261027",
+      "bytes": 2696,
+      "file": "08-block4-U/stdout.txt",
+      "sha256": "f60ed4366230a53841761357c8c40d8f8acf62e8b759c094961a77db184f3bd9"
+    },
+    "c2_overhead-09": {
+      "archive": "stage-c2-overhead-20261027",
+      "bytes": 2698,
+      "file": "09-block5-U/stdout.txt",
+      "sha256": "9611fdd68631916b2f0738f6468a639c5459a13db090bd4d66c900fdaaae3923"
+    },
+    "c2_overhead-10": {
+      "archive": "stage-c2-overhead-20261027",
+      "bytes": 2699,
+      "file": "10-block5-T/stdout.txt",
+      "sha256": "eb2d7e4f46bdea35f49a7bb1718d8a1917c70b85ac7f3dcea3bfbf749074aa08"
+    },
+    "c2_overhead-11": {
+      "archive": "stage-c2-overhead-20261027",
+      "bytes": 2699,
+      "file": "11-block6-T/stdout.txt",
+      "sha256": "f27decc4586487c800cad9fab9605ec7f392004f76d4de21fab1896723070ccf"
+    },
+    "c2_overhead-12": {
+      "archive": "stage-c2-overhead-20261027",
+      "bytes": 2698,
+      "file": "12-block6-U/stdout.txt",
+      "sha256": "9caf70c3189967bb6cb4809a041f19848abb0d3b7f4c598dab033f1911386f3a"
+    }
+  },
+  "schema": "heterollm.portfolio.raw-timings.v1",
+  "scope": "Allowlisted original integer samples_ns; C1 and contemporaneous C2 U/T remain separate datasets. Each process contains two workloads with three correlated repetitions.",
+  "source_count": 24
+}

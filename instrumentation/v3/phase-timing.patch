@@ -1,0 +1,778 @@
+--- a/ggml/src/ggml-backend.cpp
++++ b/ggml/src/ggml-backend.cpp
+@@ -12,6 +12,7 @@
+ #include "ggml-backend-impl.h"
+ #include "ggml-alloc.h"
+ #include "ggml-impl.h"
++#include "heterollm-cpu-trace.h"
+ 
+ #include <assert.h>
+ #include <limits.h>
+@@ -356,7 +357,12 @@
+ bool ggml_backend_buffer_copy_tensor(const struct ggml_tensor * src, struct ggml_tensor * dst) {
+     ggml_backend_buffer_t dst_buf = dst->view_src ? dst->view_src->buffer : dst->buffer;
+     if (dst_buf->iface.cpy_tensor) {
+-        return dst_buf->iface.cpy_tensor(dst_buf, src, dst);
++        HT_TRACE_SCOPE("copy.buffer_interface_attempt", ggml_backend_buffer_name(src->buffer), ggml_backend_buffer_name(dst_buf), ggml_nbytes(src));
++        const bool copied = dst_buf->iface.cpy_tensor(dst_buf, src, dst);
++        if (copied) {
++            HT_TRACE_SCOPE("copy.buffer_interface_accepted", ggml_backend_buffer_name(src->buffer), ggml_backend_buffer_name(dst_buf), ggml_nbytes(src));
++        }
++        return copied;
+     }
+     return false;
+ }
+@@ -568,6 +574,7 @@
+         return;
+     }
+ 
++    HT_TRACE_SCOPE("backend.synchronize", ggml_backend_name(backend), "", 0);
+     backend->iface.synchronize(backend);
+ }
+ 
+@@ -600,6 +607,7 @@
+ 
+ enum ggml_status ggml_backend_graph_compute_async(ggml_backend_t backend, struct ggml_cgraph * cgraph) {
+     GGML_ASSERT(backend);
++    HT_TRACE_SCOPE("graph.submit", ggml_backend_name(backend), "", 0);
+     return backend->iface.graph_compute(backend, cgraph);
+ }
+ 
+@@ -633,17 +641,26 @@
+     }
+ 
+     if (ggml_backend_buffer_is_host(src->buffer)) {
++        HT_TRACE_SCOPE("copy.host_to_backend", ggml_backend_buffer_name(src->buffer), ggml_backend_buffer_name(dst->buffer), ggml_nbytes(src));
+         ggml_backend_tensor_set(dst, src->data, 0, ggml_nbytes(src));
+     } else if (ggml_backend_buffer_is_host(dst->buffer)) {
++        HT_TRACE_SCOPE("copy.backend_to_host", ggml_backend_buffer_name(src->buffer), ggml_backend_buffer_name(dst->buffer), ggml_nbytes(src));
+         ggml_backend_tensor_get(src, dst->data, 0, ggml_nbytes(src));
+     } else if (!ggml_backend_buffer_copy_tensor(src, dst)) {
++        HT_TRACE_SCOPE("copy.host_stage", ggml_backend_buffer_name(src->buffer), ggml_backend_buffer_name(dst->buffer), ggml_nbytes(src));
+ #ifndef NDEBUG
+         GGML_LOG_DEBUG("%s: warning: slow copy from %s to %s\n", __func__, ggml_backend_buffer_name(src->buffer), ggml_backend_buffer_name(dst->buffer));
+ #endif // NDEBUG
+         size_t nbytes = ggml_nbytes(src);
+         void * data = malloc(nbytes);
+-        ggml_backend_tensor_get(src, data, 0, nbytes);
+-        ggml_backend_tensor_set(dst, data, 0, nbytes);
++        {
++            HT_TRACE_SCOPE("copy.host_stage.get", ggml_backend_buffer_name(src->buffer), "host_malloc", nbytes);
++            ggml_backend_tensor_get(src, data, 0, nbytes);
++        }
++        {
++            HT_TRACE_SCOPE("copy.host_stage.set", "host_malloc", ggml_backend_buffer_name(dst->buffer), nbytes);
++            ggml_backend_tensor_set(dst, data, 0, nbytes);
++        }
+         free(data);
+     }
+ }
+@@ -662,6 +679,7 @@
+         }
+     }
+ 
++    HT_TRACE_SCOPE("copy.public_async_fallback", ggml_backend_name(backend_src), ggml_backend_name(backend_dst), ggml_nbytes(src));
+     // an async copy would normally happen after all the queued operations on both backends are completed
+     // to simulate the same behavior, we need to synchronize both backends first, and do a blocking copy
+     ggml_backend_synchronize(backend_src);
+@@ -690,6 +708,7 @@
+     GGML_ASSERT(backend);
+     GGML_ASSERT(backend->iface.event_record != NULL);
+ 
++    HT_TRACE_EVENT("event.record_submit", ggml_backend_name(backend));
+     backend->iface.event_record(backend, event);
+ }
+ 
+@@ -697,6 +716,7 @@
+     GGML_ASSERT(event);
+     GGML_ASSERT(event->device->iface.event_synchronize);
+ 
++    HT_TRACE_EVENT("event.synchronize", ggml_backend_dev_name(event->device));
+     event->device->iface.event_synchronize(event->device, event);
+ }
+ 
+@@ -704,6 +724,7 @@
+     GGML_ASSERT(backend);
+     GGML_ASSERT(backend->iface.event_wait != NULL);
+ 
++    HT_TRACE_SCOPE("event.wait_submit", ggml_backend_dev_name(event->device), ggml_backend_name(backend), 0);
+     backend->iface.event_wait(backend, event);
+ }
+ 
+@@ -1204,6 +1225,7 @@
+ 
+ // assigns backends to ops and splits the graph into subgraphs that can be computed on the same backend
+ void ggml_backend_sched_split_graph(ggml_backend_sched_t sched, struct ggml_cgraph * graph) {
++    HT_TRACE_SCOPE("graph.split_build", "", "", 0);
+     // reset splits
+     sched->n_splits = 0;
+     sched->n_graph_inputs = 0;
+@@ -1745,6 +1767,7 @@
+ }
+ 
+ static bool ggml_backend_sched_alloc_splits(ggml_backend_sched_t sched) {
++    HT_TRACE_SCOPE("graph.allocate", "", "", 0);
+     bool backend_ids_changed = false;
+     for (int i = 0; i < sched->graph.n_nodes; i++) {
+         if (sched->node_backend_ids[i] != sched->prev_node_backend_ids[i] &&
+@@ -1765,6 +1788,7 @@
+ 
+     // allocate graph
+     if (backend_ids_changed || !ggml_gallocr_alloc_graph(sched->galloc, &sched->graph)) {
++        HT_TRACE_SCOPE("graph.reallocate", backend_ids_changed ? "backend_changed" : "allocation_retry", "", 0);
+ #ifndef NDEBUG
+         GGML_LOG_DEBUG("%s: failed to allocate graph, reserving (backend_ids_changed = %d)\n", __func__, backend_ids_changed);
+ #endif
+@@ -1801,6 +1825,8 @@
+ 
+ static enum ggml_status ggml_backend_sched_compute_splits(ggml_backend_sched_t sched) {
+     GGML_ASSERT(sched);
++    HT_TRACE_GRAPH(sched->n_copies, sched->cur_copy);
++    HT_TRACE_SCOPE("graph.compute_splits", "", "", 0);
+     struct ggml_backend_sched_split * splits = sched->splits;
+ 
+     ggml_tensor * prev_ids_tensor = nullptr;
+@@ -1810,9 +1836,11 @@
+     int prev_backend_id = -1;
+ 
+     for (int split_id = 0; split_id < sched->n_splits; split_id++) {
++        HT_TRACE_SPLIT(split_id);
+         struct ggml_backend_sched_split * split = &splits[split_id];
+         int split_backend_id = split->backend_id;
+         ggml_backend_t split_backend = sched->backends[split_backend_id];
++        HT_TRACE_SCOPE("split.cpu_scope", ggml_backend_name(split_backend), "", 0);
+ 
+         // ensure the previous split's async work has completed before we start
+         // this split, the allocator may have reused buffer regions across splits
+@@ -1938,7 +1966,13 @@
+                 } else {
+                     // try async copy, but if not possible, we can still use a sync copy without synchronizing the dst backend, since we handle the synchronization here with multiple copies and events
+                     // TODO: add public function to facilitate this, since applications do not have direct access to the backend interface
+-                    if (!split_backend->iface.cpy_tensor_async || !split_backend->iface.cpy_tensor_async(input_backend, split_backend, input, input_cpy)) {
++                    bool ht_async_copied;
++                    {
++                        HT_TRACE_SCOPE("copy.scheduler_async_attempt", ggml_backend_name(input_backend), ggml_backend_name(split_backend), ggml_nbytes(input));
++                        ht_async_copied = split_backend->iface.cpy_tensor_async && split_backend->iface.cpy_tensor_async(input_backend, split_backend, input, input_cpy);
++                    }
++                    if (!ht_async_copied) {
++                        HT_TRACE_SCOPE("copy.scheduler_fallback", ggml_backend_name(input_backend), ggml_backend_name(split_backend), ggml_nbytes(input));
+                         ggml_backend_synchronize(input_backend);
+                         if (sched->events[split_backend_id][sched->cur_copy] != NULL) {
+                             ggml_backend_event_synchronize(sched->events[split_backend_id][sched->cur_copy]);
+@@ -1946,6 +1980,8 @@
+                             ggml_backend_synchronize(split_backend);
+                         }
+                         ggml_backend_tensor_copy(input, input_cpy);
++                    } else {
++                        HT_TRACE_SCOPE("copy.scheduler_async_accepted", ggml_backend_name(input_backend), ggml_backend_name(split_backend), ggml_nbytes(input));
+                     }
+                 }
+             }
+@@ -2671,3 +2707,5 @@
+     GGML_ASSERT((uintptr_t)ptr % TENSOR_ALIGNMENT == 0 && "buffer pointer must be aligned");
+     return ggml_backend_buffer_init(ggml_backend_cpu_buffer_from_ptr_type(), ggml_backend_cpu_buffer_from_ptr_i, ptr, size);
+ }
++
++#include "ht3-recorder.h"
+--- a/ggml/src/ggml-cuda/ggml-cuda.cu
++++ b/ggml/src/ggml-cuda/ggml-cuda.cu
+@@ -4,6 +4,7 @@
+ 
+ #include "ggml-cuda/allreduce.cuh"
+ #include "ggml-cuda/common.cuh"
++#include "ht3-cuda.h"
+ #include "ggml-cuda/acc.cuh"
+ #include "ggml-cuda/add-id.cuh"
+ #include "ggml-cuda/arange.cuh"
+@@ -780,16 +781,22 @@
+     ggml_backend_cuda_buffer_context * ctx = (ggml_backend_cuda_buffer_context *) buffer->context;
+ 
+     ggml_cuda_set_device(ctx->device);
++    const auto ht_event=ht3_start(ctx->device,cudaStreamPerThread,"copy_h2d","per_thread",size);
+     CUDA_CHECK(cudaMemcpyAsync((char *) tensor->data + offset, data, size, cudaMemcpyHostToDevice, cudaStreamPerThread));
++    ht3_events().end(ht_event,cudaStreamPerThread);
+     CUDA_CHECK(cudaStreamSynchronize(cudaStreamPerThread));
++    ht3_events().resolve();
+ }
+ 
+ static void ggml_backend_cuda_buffer_get_tensor(ggml_backend_buffer_t buffer, const ggml_tensor * tensor, void * data, size_t offset, size_t size) {
+     ggml_backend_cuda_buffer_context * ctx = (ggml_backend_cuda_buffer_context *) buffer->context;
+ 
+     ggml_cuda_set_device(ctx->device);
++    const auto ht_event=ht3_start(ctx->device,cudaStreamPerThread,"copy_d2h","per_thread",size);
+     CUDA_CHECK(cudaMemcpyAsync(data, (const char *) tensor->data + offset, size, cudaMemcpyDeviceToHost, cudaStreamPerThread));
++    ht3_events().end(ht_event,cudaStreamPerThread);
+     CUDA_CHECK(cudaStreamSynchronize(cudaStreamPerThread));
++    ht3_events().resolve();
+ }
+ 
+ static void ggml_backend_cuda_buffer_set_tensor_2d(ggml_backend_buffer_t buffer, struct ggml_tensor * tensor, const void * data,
+@@ -797,9 +804,12 @@
+     ggml_backend_cuda_buffer_context * ctx = (ggml_backend_cuda_buffer_context *) buffer->context;
+ 
+     ggml_cuda_set_device(ctx->device);
++    const auto ht_event=ht3_start(ctx->device,cudaStreamPerThread,"copy_h2d_2d","per_thread",size*n_copies);
+     CUDA_CHECK(cudaMemcpy2DAsync(
+         (char *) tensor->data + offset, stride_tensor, data, stride_data, size, n_copies, cudaMemcpyHostToDevice, cudaStreamPerThread));
++    ht3_events().end(ht_event,cudaStreamPerThread);
+     CUDA_CHECK(cudaStreamSynchronize(cudaStreamPerThread));
++    ht3_events().resolve();
+ }
+ 
+ static void ggml_backend_cuda_buffer_get_tensor_2d(ggml_backend_buffer_t buffer, const struct ggml_tensor * tensor, void * data,
+@@ -807,9 +817,12 @@
+     ggml_backend_cuda_buffer_context * ctx = (ggml_backend_cuda_buffer_context *)buffer->context;
+ 
+     ggml_cuda_set_device(ctx->device);
++    const auto ht_event=ht3_start(ctx->device,cudaStreamPerThread,"copy_d2h_2d","per_thread",size*n_copies);
+     CUDA_CHECK(cudaMemcpy2DAsync(
+         data, stride_data, (const char *) tensor->data + offset, stride_tensor, size, n_copies, cudaMemcpyDeviceToHost, cudaStreamPerThread));
++    ht3_events().end(ht_event,cudaStreamPerThread);
+     CUDA_CHECK(cudaStreamSynchronize(cudaStreamPerThread));
++    ht3_events().resolve();
+ }
+ 
+ static bool ggml_backend_cuda_buffer_cpy_tensor(ggml_backend_buffer_t buffer, const ggml_tensor * src, ggml_tensor * dst) {
+@@ -2497,6 +2510,10 @@
+ static void ggml_backend_cuda_free(ggml_backend_t backend) {
+     ggml_backend_cuda_context * cuda_ctx = (ggml_backend_cuda_context *)backend->context;
+ 
++    if(ht3_enabled()){
++        ggml_cuda_set_device(cuda_ctx->device);
++        ht3_events().release();
++    }
+     delete cuda_ctx;
+     delete backend;
+ }
+@@ -2604,6 +2621,7 @@
+     ggml_backend_cuda_context * cuda_ctx = (ggml_backend_cuda_context *)backend->context;
+ 
+     CUDA_CHECK(cudaStreamSynchronize(cuda_ctx->stream()));
++    ht3_events().resolve();
+ 
+     GGML_UNUSED(backend);
+ }
+@@ -4464,6 +4482,7 @@
+         }
+ 
+ #ifdef USE_CUDA_GRAPH
++        if(ht3_enabled() && is_concurrent_event_active)ht3_error("unjoined auxiliary stream");
+         ggml_cuda_graph * graph = cuda_ctx->cuda_graph(graph_key);
+         if (use_cuda_graph && cuda_graph_update_required) { // End CUDA graph capture
+             if (graph->graph != nullptr) {
+@@ -4491,8 +4510,11 @@
+         if (cuda_graph_update_required) { // Update graph executable
+             ggml_cuda_graph_update_executable(cuda_ctx, graph_key);
+         }
++        // Timing markers are outside capture and surround replay on stream0.
++        const auto ht_event=ht3_start(cuda_ctx->device,cuda_ctx->stream(),"graph_replay","main");
+         // Launch graph
+         CUDA_CHECK(cudaGraphLaunch(graph->instance, cuda_ctx->stream()));
++        ht3_events().end(ht_event,cuda_ctx->stream());
+ #else
+         GGML_UNUSED(graph_key);
+         graph_evaluated_or_captured = true;
+@@ -4561,6 +4583,8 @@
+     }
+ #endif // USE_CUDA_GRAPH
+ 
++    const auto ht_event=!use_cuda_graph ? ht3_start(cuda_ctx->device,cuda_ctx->stream(),"graph_uncaptured","main") : 256;
++    if(ht3_enabled() && cuda_ctx->curr_stream_no!=0)ht3_error("graph start outside main stream");
+     if (use_cuda_graph && cuda_graph_update_required) {
+         // Start CUDA graph capture
+         {
+@@ -4572,6 +4596,8 @@
+     }
+ 
+     ggml_cuda_graph_evaluate_and_capture(cuda_ctx, cgraph, use_cuda_graph, cuda_graph_update_required, graph_key);
++    if(ht3_enabled() && cuda_ctx->curr_stream_no!=0)ht3_error("graph end outside main stream");
++    if(!use_cuda_graph)ht3_events().end(ht_event,cuda_ctx->stream());
+ 
+     return GGML_STATUS_SUCCESS;
+ }
+--- a/tools/llama-bench/llama-bench.cpp
++++ b/tools/llama-bench/llama-bench.cpp
+@@ -1,3 +1,4 @@
++#include "../../ggml/src/ht3-api.h"
+ #include <algorithm>
+ #include <array>
+ #include <cassert>
+@@ -2418,7 +2419,8 @@
+                     fprintf(stderr, "llama-bench: benchmark %d/%zu: warmup prompt run\n", params_idx, params_count);
+                 }
+                 //test_prompt(ctx, std::min(t.n_batch, std::min(t.n_prompt, 32)), 0, t.n_batch, t.n_threads);
+-                bool res = test_prompt(ctx, t.n_prompt, t.n_batch, t.n_threads);
++                bool res;
++                { ht3_phase_scope ht_phase("warmup_pp",0); res = test_prompt(ctx, t.n_prompt, t.n_batch, t.n_threads); }
+                 if (!res) {
+                     fprintf(stderr, "%s: error: failed to run prompt warmup\n", __func__);
+                     llama_free(ctx);
+@@ -2430,7 +2432,8 @@
+                 if (params.progress) {
+                     fprintf(stderr, "llama-bench: benchmark %d/%zu: warmup generation run\n", params_idx, params_count);
+                 }
+-                bool res = test_gen(ctx, 1, t.n_threads);
++                bool res;
++                { ht3_phase_scope ht_phase("warmup_tg",0); res = test_gen(ctx, 1, t.n_threads); }
+                 if (!res) {
+                     fprintf(stderr, "%s: error: failed to run gen warmup\n", __func__);
+                     llama_free(ctx);
+@@ -2460,7 +2463,8 @@
+                         fprintf(stderr, "llama-bench: benchmark %d/%zu: depth run %d/%d\n", params_idx, params_count,
+                                 i + 1, params.reps);
+                     }
+-                    bool res = test_prompt(ctx, t.n_depth, t.n_batch, t.n_threads);
++                    bool res;
++                { ht3_phase_scope ht_phase("depth",i); res = test_prompt(ctx, t.n_depth, t.n_batch, t.n_threads); }
+                     if (!res) {
+                         fprintf(stderr, "%s: error: failed to run depth\n", __func__);
+                         llama_free(ctx);
+@@ -2487,7 +2491,8 @@
+                     fprintf(stderr, "llama-bench: benchmark %d/%zu: prompt run %d/%d\n", params_idx, params_count,
+                             i + 1, params.reps);
+                 }
+-                bool res = test_prompt(ctx, t.n_prompt, t.n_batch, t.n_threads);
++                bool res;
++                { ht3_phase_scope ht_phase("pp512",i); res = test_prompt(ctx, t.n_prompt, t.n_batch, t.n_threads); }
+                 if (!res) {
+                     fprintf(stderr, "%s: error: failed to run prompt\n", __func__);
+                     llama_free(ctx);
+@@ -2500,7 +2505,8 @@
+                     fprintf(stderr, "llama-bench: benchmark %d/%zu: generation run %d/%d\n", params_idx, params_count,
+                             i + 1, params.reps);
+                 }
+-                bool res = test_gen(ctx, t.n_gen, t.n_threads);
++                bool res;
++                { ht3_phase_scope ht_phase("tg128",i); res = test_gen(ctx, t.n_gen, t.n_threads); }
+                 if (!res) {
+                     fprintf(stderr, "%s: error: failed to run gen\n", __func__);
+                     llama_free(ctx);
+--- /dev/null
++++ b/ggml/src/heterollm-cpu-trace.h
+@@ -0,0 +1,219 @@
++// Bounded CPU-call instrumentation only; no added GPU synchronization.
++#pragma once
++#if defined(HETEROLLM_CPU_TRACE) && HETEROLLM_CPU_TRACE
++#include <chrono>
++#include <cstdint>
++#include <cstdio>
++#include <cstdlib>
++#include <cstring>
++#include <functional>
++#include <limits>
++#include <mutex>
++#include <new>
++#include <thread>
++#include <fcntl.h>
++#include <unistd.h>
++
++namespace heterollm_trace {
++#ifndef HETEROLLM_TRACE_CAPACITY
++#define HETEROLLM_TRACE_CAPACITY 65536
++#endif
++static constexpr size_t capacity = HETEROLLM_TRACE_CAPACITY;
++static constexpr size_t aggregate_capacity = 32, histogram_bins = 65;
++static_assert(capacity > 0 && capacity <= 65536, "bounded detailed capacity");
++struct Context { uint64_t graph = 0; int split = -1, copy = -1, n_copies = 0; };
++inline Context & context() { static thread_local Context value; return value; }
++struct Event {
++    uint64_t seq = 0, thread = 0, begin_ns = 0, end_ns = 0, logical_bytes = 0;
++    Context context;
++    char kind[48] = {}, src[32] = {}, dst[32] = {};
++};
++struct Aggregate {
++    char backend[32] = {};
++    unsigned kind = 0;
++    uint64_t count = 0, total_ns = 0, max_ns = 0, pending = 0;
++    uint64_t histogram[histogram_bins] = {};
++};
++inline uint64_t now_ns() {
++    return uint64_t(std::chrono::duration_cast<std::chrono::nanoseconds>(
++        std::chrono::steady_clock::now().time_since_epoch()).count());
++}
++inline size_t histogram_bin(uint64_t ns) {
++    size_t bin = 0;
++    while (ns) { ++bin; ns >>= 1; }
++    return bin; // 0: exactly 0ns; b>0: [2^(b-1), 2^b-1]ns.
++}
++inline void json_string(FILE * file, const char * value) {
++    std::fputc('"', file);
++    for (const unsigned char * p = reinterpret_cast<const unsigned char *>(value); *p; ++p) {
++        if (*p == '"' || *p == '\\') std::fprintf(file, "\\%c", *p);
++        else if (*p < 32) std::fprintf(file, "\\u%04x", unsigned(*p));
++        else std::fputc(*p, file);
++    }
++    std::fputc('"', file);
++}
++class Recorder {
++    std::mutex mutex_;
++    Event * events_ = nullptr;
++    Aggregate aggregates_[aggregate_capacity] = {};
++    FILE * file_ = nullptr;
++    size_t count_ = 0, groups_ = 0;
++    uint64_t dropped_ = 0, truncated_ = 0, graph_ = 0;
++    uint64_t aggregate_started_ = 0, aggregate_completed_ = 0, aggregate_dropped_ = 0;
++    bool counter_overflow_ = false, invalid_ = false;
++    void add(uint64_t & value, uint64_t amount = 1) {
++        if (amount > std::numeric_limits<uint64_t>::max() - value) counter_overflow_ = true;
++        else value += amount;
++    }
++    template<size_t N> void copy_name(char (&dst)[N], const char * src) {
++        src = src ? src : "";
++        const size_t length = std::strlen(src);
++        if (length >= N) add(truncated_);
++        std::memcpy(dst, src, length < N ? length : N - 1);
++    }
++public:
++    Recorder() {
++        const char * path = std::getenv("HETEROLLM_TRACE_FILE");
++        if (!path || !*path) return;
++        const int fd = ::open(path, O_WRONLY | O_CREAT | O_EXCL | O_CLOEXEC, 0600);
++        if (fd < 0) { std::fprintf(stderr, "HETEROLLM_TRACE_ERROR: fresh output open failed\n"); return; }
++        file_ = ::fdopen(fd, "w");
++        if (!file_) { ::close(fd); std::fprintf(stderr, "HETEROLLM_TRACE_ERROR: fdopen failed\n"); return; }
++        events_ = new (std::nothrow) Event[capacity];
++        if (!events_) { std::fprintf(stderr, "HETEROLLM_TRACE_ERROR: allocation failed\n"); return; }
++        std::fprintf(file_, "{\"type\":\"header\",\"schema\":\"heterollm.cpu_trace.v2\",\"clock\":\"steady_clock_ns\",\"time_domain\":\"cpu\",\"phase\":\"unknown\",\"capacity\":%zu,\"record_bytes\":%zu,\"aggregate_capacity\":%zu,\"aggregate_record_bytes\":%zu,\"histogram\":\"log2_ns_zero_bin\",\"detail_policy\":\"complete_except_aggregated_event_calls\",\"aggregate_kinds\":[\"event.record_submit\",\"event.synchronize\"]}\n", capacity, sizeof(Event), aggregate_capacity, sizeof(Aggregate));
++        if (std::fflush(file_) != 0 || ::fsync(fd) != 0) {
++            std::fprintf(stderr, "HETEROLLM_TRACE_ERROR: header durability failed\n");
++            delete[] events_; events_ = nullptr;
++        }
++    }
++    ~Recorder() {
++        if (!file_) return;
++        std::lock_guard<std::mutex> lock(mutex_);
++        size_t unfinished = 0;
++        uint64_t aggregate_unfinished = 0;
++        for (size_t i = 0; i < count_; ++i) {
++            const Event & e = events_[i];
++            if (!e.end_ns) ++unfinished;
++            std::fprintf(file_, "{\"type\":\"span\",\"seq\":%llu,\"thread\":%llu,\"begin_ns\":%llu,\"end_ns\":%llu,\"graph\":%llu,\"split\":%d,\"copy\":%d,\"n_copies\":%d,\"logical_bytes\":%llu,\"kind\":",
++                (unsigned long long)e.seq, (unsigned long long)e.thread,
++                (unsigned long long)e.begin_ns, (unsigned long long)e.end_ns,
++                (unsigned long long)e.context.graph, e.context.split, e.context.copy, e.context.n_copies,
++                (unsigned long long)e.logical_bytes);
++            json_string(file_, e.kind); std::fputs(",\"src\":", file_); json_string(file_, e.src);
++            std::fputs(",\"dst\":", file_); json_string(file_, e.dst); std::fputs("}\n", file_);
++        }
++        for (size_t i = 0; i < groups_; ++i) {
++            const Aggregate & a = aggregates_[i]; add(aggregate_unfinished, a.pending);
++            std::fputs("{\"type\":\"aggregate\",\"kind\":", file_);
++            json_string(file_, a.kind == 0 ? "event.record_submit" : "event.synchronize");
++            std::fputs(",\"backend\":", file_); json_string(file_, a.backend);
++            std::fprintf(file_, ",\"count\":%llu,\"total_cpu_ns\":%llu,\"max_cpu_ns\":%llu,\"histogram\":[",
++                (unsigned long long)a.count, (unsigned long long)a.total_ns, (unsigned long long)a.max_ns);
++            for (size_t b = 0; b < histogram_bins; ++b)
++                std::fprintf(file_, "%s%llu", b ? "," : "", (unsigned long long)a.histogram[b]);
++            std::fputs("]}\n", file_);
++        }
++        const bool complete = events_ && !dropped_ && !unfinished && !truncated_ &&
++            !aggregate_unfinished && !aggregate_dropped_ && !counter_overflow_ && !invalid_ &&
++            aggregate_started_ == aggregate_completed_ && !std::ferror(file_);
++        std::fprintf(file_, "{\"type\":\"footer\",\"recorded\":%zu,\"dropped\":%llu,\"unfinished\":%zu,\"metadata_truncated\":%llu,\"aggregate_groups\":%zu,\"aggregate_started\":%llu,\"aggregate_completed\":%llu,\"aggregate_unfinished\":%llu,\"aggregate_dropped\":%llu,\"counter_overflow\":%s,\"invalid_metadata\":%s,\"complete\":%s}\n",
++            count_, (unsigned long long)dropped_, unfinished, (unsigned long long)truncated_, groups_,
++            (unsigned long long)aggregate_started_, (unsigned long long)aggregate_completed_,
++            (unsigned long long)aggregate_unfinished, (unsigned long long)aggregate_dropped_,
++            counter_overflow_ ? "true" : "false", invalid_ ? "true" : "false", complete ? "true" : "false");
++        bool failed = std::fflush(file_) != 0;
++        failed = (::fsync(::fileno(file_)) != 0) || failed;
++        failed = (std::fclose(file_) != 0) || failed;
++        if (failed || !complete) std::fprintf(stderr, "HETEROLLM_TRACE_ERROR: incomplete or unwritable trace\n");
++        delete[] events_;
++    }
++    bool enabled() const { return events_ != nullptr; }
++    uint64_t next_graph() { std::lock_guard<std::mutex> lock(mutex_); add(graph_); return graph_; }
++    size_t begin(const char * kind, const char * src, const char * dst, uint64_t bytes) {
++        if (!events_) return capacity;
++        std::lock_guard<std::mutex> lock(mutex_);
++        if (count_ == capacity) { add(dropped_); return capacity; }
++        size_t slot = count_++; Event & e = events_[slot]; e.seq = slot;
++        e.thread = uint64_t(std::hash<std::thread::id>{}(std::this_thread::get_id()));
++        e.context = context(); e.logical_bytes = bytes;
++        copy_name(e.kind, kind); copy_name(e.src, src); copy_name(e.dst, dst);
++        e.begin_ns = now_ns(); return slot;
++    }
++    void end(size_t slot) {
++        if (slot == capacity) return;
++        const uint64_t ended = now_ns();
++        std::lock_guard<std::mutex> lock(mutex_);
++        if (slot >= count_ || events_[slot].end_ns || ended < events_[slot].begin_ns) { invalid_ = true; return; }
++        events_[slot].end_ns = ended;
++    }
++    size_t aggregate_begin(const char * kind, const char * backend) {
++        if (!events_) return aggregate_capacity;
++        std::lock_guard<std::mutex> lock(mutex_); add(aggregate_started_);
++        unsigned k;
++        if (kind && !std::strcmp(kind, "event.record_submit")) k = 0;
++        else if (kind && !std::strcmp(kind, "event.synchronize")) k = 1;
++        else { invalid_ = true; add(aggregate_dropped_); return aggregate_capacity; }
++        if (!backend || !*backend || std::strlen(backend) >= sizeof(Aggregate::backend)) {
++            invalid_ = true; add(aggregate_dropped_); return aggregate_capacity;
++        }
++        size_t slot = 0;
++        while (slot < groups_ && (aggregates_[slot].kind != k || std::strcmp(aggregates_[slot].backend, backend))) ++slot;
++        if (slot == aggregate_capacity) { add(aggregate_dropped_); return aggregate_capacity; }
++        if (slot == groups_) { ++groups_; aggregates_[slot].kind = k; copy_name(aggregates_[slot].backend, backend); }
++        add(aggregates_[slot].pending); return slot;
++    }
++    void aggregate_end(size_t slot, uint64_t elapsed) {
++        if (slot == aggregate_capacity) return;
++        std::lock_guard<std::mutex> lock(mutex_);
++        if (slot >= groups_ || !aggregates_[slot].pending) { invalid_ = true; return; }
++        Aggregate & a = aggregates_[slot]; --a.pending;
++        add(a.count); add(a.total_ns, elapsed); add(a.histogram[histogram_bin(elapsed)]);
++        if (elapsed > a.max_ns) a.max_ns = elapsed;
++        add(aggregate_completed_);
++    }
++};
++inline Recorder & recorder() { static Recorder value; return value; }
++class Span {
++    size_t slot_;
++public:
++    Span(const char * kind, const char * src, const char * dst, uint64_t bytes = 0)
++        : slot_(recorder().begin(kind, src, dst, bytes)) {}
++    ~Span() { recorder().end(slot_); }
++    Span(const Span &) = delete;
++};
++class AggregateSpan {
++    size_t slot_; uint64_t start_;
++public:
++    AggregateSpan(const char * kind, const char * backend)
++        : slot_(recorder().aggregate_begin(kind, backend)), start_(now_ns()) {}
++    ~AggregateSpan() { recorder().aggregate_end(slot_, now_ns() - start_); }
++    AggregateSpan(const AggregateSpan &) = delete;
++};
++class GraphContext {
++    Context previous_;
++public:
++    GraphContext(int n_copies, int copy) : previous_(context()) {
++        if (recorder().enabled()) { context().graph = recorder().next_graph(); context().split = -1; context().copy = copy; context().n_copies = n_copies; }
++    }
++    ~GraphContext() { context() = previous_; }
++};
++class SplitContext {
++    int previous_;
++public:
++    explicit SplitContext(int split) : previous_(context().split) { context().split = split; }
++    ~SplitContext() { context().split = previous_; }
++};
++} // namespace heterollm_trace
++#define HT_TRACE_JOIN_(a,b) a##b
++#define HT_TRACE_JOIN(a,b) HT_TRACE_JOIN_(a,b)
++#define HT_TRACE_SCOPE(kind,src,dst,bytes) heterollm_trace::Span HT_TRACE_JOIN(ht_trace_,__LINE__)(kind,src,dst,bytes)
++#define HT_TRACE_EVENT(kind,backend) heterollm_trace::AggregateSpan HT_TRACE_JOIN(ht_event_,__LINE__)(kind,backend)
++#define HT_TRACE_GRAPH(n,c) heterollm_trace::GraphContext HT_TRACE_JOIN(ht_graph_,__LINE__)(n,c)
++#define HT_TRACE_SPLIT(s) heterollm_trace::SplitContext HT_TRACE_JOIN(ht_split_,__LINE__)(s)
++#else
++#define HT_TRACE_SCOPE(kind,src,dst,bytes) ((void)0)
++#define HT_TRACE_EVENT(kind,backend) ((void)0)
++#define HT_TRACE_GRAPH(n,c) ((void)0)
++#define HT_TRACE_SPLIT(s) ((void)0)
++#endif
+--- /dev/null
++++ b/ggml/src/ht3-api.h
+@@ -0,0 +1,28 @@
++#pragma once
++#include "ggml.h"
++#include <stdint.h>
++// One implementation in ggml-base. Never duplicate a recorder in backend DSOs.
++struct ht3_record {
++    uint64_t id, phase, graph, thread, bytes;
++    int split;
++    uint64_t start_before, start_after, end_before, end_after, observed;
++    double elapsed_ms;
++    const char * kind;
++    const char * backend;
++    const char * stream;
++};
++extern "C" {
++GGML_API bool ht3_enabled();
++GGML_API uint64_t ht3_now();
++GGML_API uint64_t ht3_phase_begin(const char * name, int repetition);
++GGML_API void ht3_phase_end(uint64_t phase);
++GGML_API bool ht3_begin(ht3_record * record);
++GGML_API void ht3_complete(const ht3_record * record);
++GGML_API void ht3_error(const char * reason);
++}
++struct ht3_phase_scope {
++    uint64_t id;
++    ht3_phase_scope(const char * name, int repetition): id(ht3_phase_begin(name,repetition)) {}
++    ~ht3_phase_scope() { ht3_phase_end(id); }
++    ht3_phase_scope(const ht3_phase_scope &) = delete;
++};
+--- /dev/null
++++ b/ggml/src/ht3-recorder.h
+@@ -0,0 +1,75 @@
++#pragma once
++#include "ht3-api.h"
++#include "heterollm-cpu-trace.h"
++#include <cmath>
++// This file is included ONLY by ggml-backend.cpp in ggml-base.
++namespace ht3_detail {
++constexpr size_t max_records=16384;
++struct State {
++    std::mutex mutex;
++    FILE * file=nullptr;
++    bool enabled=false, invalid=false;
++    uint64_t current=0, phases=0, starts=0, ends=0, pending=0;
++    bool open[max_records]={};
++    State() {
++        const char * path=std::getenv("HETEROLLM_TIMING_FILE");
++        if (!path || !*path) return;
++        enabled=true;
++        int fd=::open(path,O_WRONLY|O_CREAT|O_EXCL|O_CLOEXEC,0600);
++        if (fd<0 || !(file=::fdopen(fd,"w"))) {
++            if(fd>=0)::close(fd);
++            invalid=true;std::fputs("HETEROLLM_TIMING_ERROR: fresh output open\n",stderr);return;
++        }
++        std::fputs("{\"type\":\"header\",\"schema\":\"heterollm.timing.v3\",\"clock\":\"steady_clock_ns\",\"capacity\":16384,\"pool_pairs_per_backend\":256,\"correlation\":\"cpu_enqueue_to_completion_enclosure\",\"extra_synchronization\":false}\n",file);
++        if(std::fflush(file)||::fsync(fd))fail("header write");
++    }
++    void fail(const char * why) {
++        invalid=true;std::fprintf(stderr,"HETEROLLM_TIMING_ERROR: %s\n",why);
++    }
++    ~State() {
++        if(!file)return;
++        bool ok=!invalid && !pending && !current && starts==ends && !std::ferror(file);
++        std::fprintf(file,"{\"type\":\"footer\",\"phases\":%llu,\"started\":%llu,\"completed\":%llu,\"pending\":%llu,\"active_phase\":%llu,\"invalid\":%s,\"complete\":%s}\n",(unsigned long long)phases,(unsigned long long)starts,(unsigned long long)ends,(unsigned long long)pending,(unsigned long long)current,invalid?"true":"false",ok?"true":"false");
++        if(std::ferror(file)||std::fflush(file)||::fsync(::fileno(file)))ok=false;
++        if(std::fclose(file))ok=false;
++        if(!ok)std::fputs("HETEROLLM_TIMING_ERROR: incomplete or write failure\n",stderr);
++    }
++};
++inline State & state(){static State s;return s;}
++}
++extern "C" bool ht3_enabled(){return ht3_detail::state().enabled;}
++extern "C" uint64_t ht3_now(){return heterollm_trace::now_ns();}
++extern "C" void ht3_error(const char * reason){auto &s=ht3_detail::state();std::lock_guard<std::mutex>l(s.mutex);if(s.enabled)s.fail(reason);}
++extern "C" uint64_t ht3_phase_begin(const char * name,int repetition){
++    auto &s=ht3_detail::state();if(!s.enabled)return 0;
++    std::lock_guard<std::mutex>l(s.mutex);
++    if(s.current || s.pending || s.phases>=16 || repetition<0){s.fail("phase begin/state");return 0;}
++    if(std::strcmp(name,"warmup_pp")&&std::strcmp(name,"warmup_tg")&&std::strcmp(name,"pp512")&&std::strcmp(name,"tg128")&&std::strcmp(name,"depth")){s.fail("phase name");return 0;}
++    s.current=++s.phases;
++    if(s.file){std::fprintf(s.file,"{\"type\":\"phase_begin\",\"phase\":%llu,\"cpu_ns\":%llu,\"repetition\":%d,\"name\":",(unsigned long long)s.current,(unsigned long long)ht3_now(),repetition);heterollm_trace::json_string(s.file,name);std::fputs("}\n",s.file);}
++    return s.current;
++}
++extern "C" void ht3_phase_end(uint64_t phase){
++    auto &s=ht3_detail::state();if(!s.enabled)return;
++    std::lock_guard<std::mutex>l(s.mutex);
++    if(!phase || phase!=s.current || s.pending){s.fail("phase end/incomplete device capture");return;}
++    if(s.file)std::fprintf(s.file,"{\"type\":\"phase_end\",\"phase\":%llu,\"cpu_ns\":%llu}\n",(unsigned long long)phase,(unsigned long long)ht3_now());
++    s.current=0;
++}
++extern "C" bool ht3_begin(ht3_record *r){
++    auto &s=ht3_detail::state();if(!s.enabled)return false;
++    std::lock_guard<std::mutex>l(s.mutex);
++    if(!s.current)return false; // Loading/initialization deliberately outside device coverage.
++    if(s.starts>=ht3_detail::max_records){s.fail("device record capacity");return false;}
++    r->id=s.starts++;r->phase=s.current;r->graph=heterollm_trace::context().graph;r->split=heterollm_trace::context().split;
++    r->thread=uint64_t(std::hash<std::thread::id>{}(std::this_thread::get_id()));
++    s.open[r->id]=true;++s.pending;return true;
++}
++extern "C" void ht3_complete(const ht3_record *r){
++    auto &s=ht3_detail::state();std::lock_guard<std::mutex>l(s.mutex);
++    if(r->id>=s.starts || !s.open[r->id] || r->phase!=s.current || !std::isfinite(r->elapsed_ms) || r->elapsed_ms<0 || !(r->start_before<=r->start_after && r->start_after<=r->end_before && r->end_before<=r->end_after && r->end_after<=r->observed)){s.fail("invalid device completion");return;}
++    s.open[r->id]=false;--s.pending;++s.ends;
++    if(!s.file)return;
++    std::fprintf(s.file,"{\"type\":\"device\",\"id\":%llu,\"phase\":%llu,\"graph\":%llu,\"split\":%d,\"thread\":%llu,\"logical_bytes\":%llu,\"start_before\":%llu,\"start_after\":%llu,\"end_before\":%llu,\"end_after\":%llu,\"observed\":%llu,\"elapsed_ms\":%.9g,\"kind\":",(unsigned long long)r->id,(unsigned long long)r->phase,(unsigned long long)r->graph,r->split,(unsigned long long)r->thread,(unsigned long long)r->bytes,(unsigned long long)r->start_before,(unsigned long long)r->start_after,(unsigned long long)r->end_before,(unsigned long long)r->end_after,(unsigned long long)r->observed,r->elapsed_ms);
++    heterollm_trace::json_string(s.file,r->kind);std::fputs(",\"backend\":",s.file);heterollm_trace::json_string(s.file,r->backend);std::fputs(",\"stream\":",s.file);heterollm_trace::json_string(s.file,r->stream);std::fputs("}\n",s.file);
++}
+--- /dev/null
++++ b/ggml/src/ht3-pool.h
+@@ -0,0 +1,56 @@
++#pragma once
++#include "ht3-api.h"
++#include <cmath>
++#include <mutex>
++// Ops is CUDA/HIP in the candidate and deterministic CPU callbacks in tests.
++// Only query; NEVER synchronize, wait, poll, or change stream dependencies here.
++template<class Ops, size_t Capacity=256> class ht3_pool {
++    struct Slot {typename Ops::Event start{},end{};bool start_created=false,end_created=false,pending=false,ended=false;ht3_record row{};};
++    Slot slots[Capacity];std::mutex mutex;
++public:
++    size_t begin(typename Ops::Stream stream,const char *kind,const char *backend,const char *stream_name,uint64_t bytes){
++        if(!ht3_enabled())return Capacity;
++        std::lock_guard<std::mutex>l(mutex);
++        ht3_record r{};r.kind=kind;r.backend=backend;r.stream=stream_name;r.bytes=bytes;
++        if(!ht3_begin(&r))return Capacity;
++        size_t i=0;while(i<Capacity && slots[i].pending)++i;
++        if(i==Capacity){ht3_error("event pool capacity");return Capacity;}
++        auto &s=slots[i];s.row=r;s.pending=true;s.ended=false;
++        if(!s.start_created)s.start_created=Ops::create(s.start);
++        if(!s.end_created)s.end_created=Ops::create(s.end);
++        if(!s.start_created||!s.end_created){ht3_error("event create");return Capacity;}
++        s.row.start_before=ht3_now();bool ok=Ops::record(s.start,stream);s.row.start_after=ht3_now();
++        if(!ok){ht3_error("start record");return Capacity;}return i;
++    }
++    void end(size_t i,typename Ops::Stream stream){
++        if(i==Capacity)return;
++        std::lock_guard<std::mutex>l(mutex);auto&s=slots[i];
++        if(!s.pending||s.ended){ht3_error("duplicate end");return;}
++        s.row.end_before=ht3_now();bool ok=Ops::record(s.end,stream);s.row.end_after=ht3_now();
++        s.ended=true;if(!ok)ht3_error("end record");
++    }
++    void resolve(){
++        if(!ht3_enabled())return;
++        std::lock_guard<std::mutex>l(mutex);
++        for(auto&s:slots){
++            if(!s.pending||!s.ended)continue;
++            int a=Ops::query(s.start),b=Ops::query(s.end);
++            uint64_t observed=ht3_now();
++            if(a<0||b<0){ht3_error("event query");continue;}
++            if(!a||!b)continue; // Incomplete is retained and fails phase/final validation.
++            float ms=0;
++            if(!Ops::elapsed(ms,s.start,s.end)||!std::isfinite(ms)||ms<0){ht3_error("elapsed time");continue;}
++            s.row.elapsed_ms=ms;s.row.observed=observed;ht3_complete(&s.row);s.pending=false;
++        }
++    }
++    // Called before backend context destruction, after existing workload waits.
++    void release(){
++        if(!ht3_enabled())return;
++        std::lock_guard<std::mutex>l(mutex);
++        for(auto&s:slots){
++            if(s.pending)ht3_error("unresolved event at release");
++            if(s.start_created){if(!Ops::destroy(s.start))ht3_error("start event destroy");s.start_created=false;}
++            if(s.end_created){if(!Ops::destroy(s.end))ht3_error("end event destroy");s.end_created=false;}
++        }
++    }
++};
+--- /dev/null
++++ b/ggml/src/ht3-cuda.h
+@@ -0,0 +1,36 @@
++#pragma once
++#include "ht3-pool.h"
++// Included after common.cuh: each DSO uses ONLY its native event API.
++namespace {
++struct ht3_ops {
++    using Event=cudaEvent_t;using Stream=cudaStream_t;
++    static bool create(Event &e){return cudaEventCreateWithFlags(&e,0)==cudaSuccess;}
++    static bool record(Event e,Stream s){return cudaEventRecord(e,s)==cudaSuccess;}
++    static bool destroy(Event e){return cudaEventDestroy(e)==cudaSuccess;}
++    static int query(Event e){
++#ifdef GGML_USE_HIP
++        auto r=hipEventQuery(e);return r==hipSuccess?1:r==hipErrorNotReady?0:-1;
++#else
++        auto r=cudaEventQuery(e);return r==cudaSuccess?1:r==cudaErrorNotReady?0:-1;
++#endif
++    }
++    static bool elapsed(float &ms,Event a,Event b){
++#ifdef GGML_USE_HIP
++        return hipEventElapsedTime(&ms,a,b)==hipSuccess;
++#else
++        return cudaEventElapsedTime(&ms,a,b)==cudaSuccess;
++#endif
++    }
++};
++ht3_pool<ht3_ops> &ht3_events(){static ht3_pool<ht3_ops> value;return value;}
++size_t ht3_start(int device,cudaStream_t stream,const char *kind,const char *name,uint64_t bytes=0){
++    if(!ht3_enabled())return 256;
++    if(device!=0 || !stream){ht3_error("unsupported device or NULL stream");return 256;}
++#ifdef GGML_USE_HIP
++    const char *backend="ROCm0";
++#else
++    const char *backend="CUDA0";
++#endif
++    return ht3_events().begin(stream,kind,backend,name,bytes);
++}
++}

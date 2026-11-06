@@ -1,0 +1,1303 @@
+{
+  "c1": {
+    "claims": "Initial descriptive baseline comparison only; no statistically established optimization claim.",
+    "correlated_internal_samples": 72,
+    "groups": {
+      "A": {
+        "label": "RTX 5090 + RAM",
+        "observations": [
+          {
+            "ordinal": 3,
+            "pp_tokens_s": 221.18437798953423,
+            "round": 1,
+            "tg_tokens_s": 4.8510721476817
+          },
+          {
+            "ordinal": 8,
+            "pp_tokens_s": 222.11811282043604,
+            "round": 2,
+            "tg_tokens_s": 4.864285154903955
+          },
+          {
+            "ordinal": 10,
+            "pp_tokens_s": 220.82803878597804,
+            "round": 3,
+            "tg_tokens_s": 4.859256402490858
+          }
+        ],
+        "pp512": {
+          "independent_launch_means": [
+            221.18437798953423,
+            222.11811282043604,
+            220.82803878597804
+          ],
+          "independent_n": 3,
+          "mean": 221.37684319864942,
+          "sample_sd": 0.6662243587077155
+        },
+        "reference_layer_map": {
+          "0": "CPU",
+          "1": "CPU",
+          "10": "CPU",
+          "11": "CPU",
+          "12": "CPU",
+          "13": "CPU",
+          "14": "CPU",
+          "15": "CPU",
+          "16": "CPU",
+          "17": "CPU",
+          "18": "CPU",
+          "19": "CPU",
+          "2": "CPU",
+          "20": "CPU",
+          "21": "CPU",
+          "22": "CPU",
+          "23": "CPU",
+          "24": "CPU",
+          "25": "CUDA0",
+          "26": "CUDA0",
+          "27": "CUDA0",
+          "28": "CUDA0",
+          "29": "CUDA0",
+          "3": "CPU",
+          "30": "CUDA0",
+          "31": "CUDA0",
+          "32": "CUDA0",
+          "33": "CUDA0",
+          "34": "CUDA0",
+          "35": "CUDA0",
+          "36": "CUDA0",
+          "37": "CUDA0",
+          "38": "CUDA0",
+          "39": "CUDA0",
+          "4": "CPU",
+          "40": "CUDA0",
+          "41": "CUDA0",
+          "42": "CUDA0",
+          "43": "CUDA0",
+          "44": "CUDA0",
+          "45": "CUDA0",
+          "46": "CUDA0",
+          "47": "CUDA0",
+          "48": "CUDA0",
+          "49": "CUDA0",
+          "5": "CPU",
+          "50": "CUDA0",
+          "51": "CUDA0",
+          "52": "CUDA0",
+          "53": "CUDA0",
+          "54": "CUDA0",
+          "55": "CUDA0",
+          "56": "CUDA0",
+          "57": "CUDA0",
+          "58": "CUDA0",
+          "59": "CUDA0",
+          "6": "CPU",
+          "60": "CUDA0",
+          "61": "CUDA0",
+          "62": "CUDA0",
+          "63": "CUDA0",
+          "64": "CUDA0",
+          "65": "CUDA0",
+          "66": "CUDA0",
+          "67": "CUDA0",
+          "68": "CUDA0",
+          "69": "CUDA0",
+          "7": "CPU",
+          "70": "CUDA0",
+          "71": "CUDA0",
+          "72": "CUDA0",
+          "73": "CUDA0",
+          "74": "CUDA0",
+          "75": "CUDA0",
+          "76": "CUDA0",
+          "77": "CUDA0",
+          "78": "CUDA0",
+          "79": "CUDA0",
+          "8": "CPU",
+          "80": "CUDA0",
+          "9": "CPU"
+        },
+        "resources": {
+          "gpu": {
+            "CUDA0": {
+              "peak_temperature_c": 49.0,
+              "peak_used_bytes": 30593253376
+            },
+            "ROCm0": {
+              "peak_temperature_c": 44.0,
+              "peak_used_bytes": 59990016
+            }
+          },
+          "min_available_bytes": 74714525696,
+          "peak_sampled_hwm_bytes": 14621417472,
+          "peak_sampled_rss_bytes": 14621417472,
+          "peak_swap_used_bytes": 0,
+          "peak_system_nonavailable_bytes": 24059654144,
+          "peak_wait4_rss_bytes": 14619856896
+        },
+        "tg128": {
+          "independent_launch_means": [
+            4.8510721476817,
+            4.864285154903955,
+            4.859256402490858
+          ],
+          "independent_n": 3,
+          "mean": 4.858204568358838,
+          "sample_sd": 0.0066690071408571465
+        }
+      },
+      "B": {
+        "label": "R9700 + RAM",
+        "observations": [
+          {
+            "ordinal": 4,
+            "pp_tokens_s": 173.938353157201,
+            "round": 1,
+            "tg_tokens_s": 4.5879097188718445
+          },
+          {
+            "ordinal": 6,
+            "pp_tokens_s": 174.1298124117158,
+            "round": 2,
+            "tg_tokens_s": 4.596589283718016
+          },
+          {
+            "ordinal": 9,
+            "pp_tokens_s": 173.9666488046802,
+            "round": 3,
+            "tg_tokens_s": 4.596612759774077
+          }
+        ],
+        "pp512": {
+          "independent_launch_means": [
+            173.938353157201,
+            174.1298124117158,
+            173.9666488046802
+          ],
+          "independent_n": 3,
+          "mean": 174.011604791199,
+          "sample_sd": 0.10334380522193261
+        },
+        "reference_layer_map": {
+          "0": "CPU",
+          "1": "CPU",
+          "10": "CPU",
+          "11": "CPU",
+          "12": "CPU",
+          "13": "CPU",
+          "14": "CPU",
+          "15": "CPU",
+          "16": "CPU",
+          "17": "CPU",
+          "18": "CPU",
+          "19": "CPU",
+          "2": "CPU",
+          "20": "CPU",
+          "21": "CPU",
+          "22": "ROCm0",
+          "23": "ROCm0",
+          "24": "ROCm0",
+          "25": "ROCm0",
+          "26": "ROCm0",
+          "27": "ROCm0",
+          "28": "ROCm0",
+          "29": "ROCm0",
+          "3": "CPU",
+          "30": "ROCm0",
+          "31": "ROCm0",
+          "32": "ROCm0",
+          "33": "ROCm0",
+          "34": "ROCm0",
+          "35": "ROCm0",
+          "36": "ROCm0",
+          "37": "ROCm0",
+          "38": "ROCm0",
+          "39": "ROCm0",
+          "4": "CPU",
+          "40": "ROCm0",
+          "41": "ROCm0",
+          "42": "ROCm0",
+          "43": "ROCm0",
+          "44": "ROCm0",
+          "45": "ROCm0",
+          "46": "ROCm0",
+          "47": "ROCm0",
+          "48": "ROCm0",
+          "49": "ROCm0",
+          "5": "CPU",
+          "50": "ROCm0",
+          "51": "ROCm0",
+          "52": "ROCm0",
+          "53": "ROCm0",
+          "54": "ROCm0",
+          "55": "ROCm0",
+          "56": "ROCm0",
+          "57": "ROCm0",
+          "58": "ROCm0",
+          "59": "ROCm0",
+          "6": "CPU",
+          "60": "ROCm0",
+          "61": "ROCm0",
+          "62": "ROCm0",
+          "63": "ROCm0",
+          "64": "ROCm0",
+          "65": "ROCm0",
+          "66": "ROCm0",
+          "67": "ROCm0",
+          "68": "ROCm0",
+          "69": "ROCm0",
+          "7": "CPU",
+          "70": "ROCm0",
+          "71": "ROCm0",
+          "72": "ROCm0",
+          "73": "ROCm0",
+          "74": "ROCm0",
+          "75": "ROCm0",
+          "76": "ROCm0",
+          "77": "ROCm0",
+          "78": "ROCm0",
+          "79": "ROCm0",
+          "8": "CPU",
+          "80": "ROCm0",
+          "9": "CPU"
+        },
+        "resources": {
+          "gpu": {
+            "CUDA0": {
+              "peak_temperature_c": 39.0,
+              "peak_used_bytes": 473956352
+            },
+            "ROCm0": {
+              "peak_temperature_c": 70.0,
+              "peak_used_bytes": 31406702592
+            }
+          },
+          "min_available_bytes": 76268814336,
+          "peak_sampled_hwm_bytes": 13310230528,
+          "peak_sampled_rss_bytes": 13306310656,
+          "peak_swap_used_bytes": 0,
+          "peak_system_nonavailable_bytes": 22505365504,
+          "peak_wait4_rss_bytes": 13310230528
+        },
+        "tg128": {
+          "independent_launch_means": [
+            4.5879097188718445,
+            4.596589283718016,
+            4.596612759774077
+          ],
+          "independent_n": 3,
+          "mean": 4.593703920787979,
+          "sample_sd": 0.0050179397829194505
+        }
+      },
+      "D": {
+        "label": "Default mixed",
+        "observations": [
+          {
+            "ordinal": 2,
+            "pp_tokens_s": 704.8558984232,
+            "round": 1,
+            "tg_tokens_s": 18.017838254380457
+          },
+          {
+            "ordinal": 5,
+            "pp_tokens_s": 705.2546698505018,
+            "round": 2,
+            "tg_tokens_s": 18.06133103295883
+          },
+          {
+            "ordinal": 11,
+            "pp_tokens_s": 706.6084350646595,
+            "round": 3,
+            "tg_tokens_s": 18.07589963663628
+          }
+        ],
+        "pp512": {
+          "independent_launch_means": [
+            704.8558984232,
+            705.2546698505018,
+            706.6084350646595
+          ],
+          "independent_n": 3,
+          "mean": 705.5730011127871,
+          "sample_sd": 0.9186115960108787
+        },
+        "reference_layer_map": {
+          "0": "CUDA0",
+          "1": "CUDA0",
+          "10": "CUDA0",
+          "11": "CUDA0",
+          "12": "CUDA0",
+          "13": "CUDA0",
+          "14": "CUDA0",
+          "15": "CUDA0",
+          "16": "CUDA0",
+          "17": "CUDA0",
+          "18": "CUDA0",
+          "19": "CUDA0",
+          "2": "CUDA0",
+          "20": "CUDA0",
+          "21": "CUDA0",
+          "22": "CUDA0",
+          "23": "CUDA0",
+          "24": "CUDA0",
+          "25": "CUDA0",
+          "26": "CUDA0",
+          "27": "CUDA0",
+          "28": "CUDA0",
+          "29": "CUDA0",
+          "3": "CUDA0",
+          "30": "CUDA0",
+          "31": "CUDA0",
+          "32": "CUDA0",
+          "33": "CUDA0",
+          "34": "CUDA0",
+          "35": "CUDA0",
+          "36": "CUDA0",
+          "37": "CUDA0",
+          "38": "CUDA0",
+          "39": "CUDA0",
+          "4": "CUDA0",
+          "40": "ROCm0",
+          "41": "ROCm0",
+          "42": "ROCm0",
+          "43": "ROCm0",
+          "44": "ROCm0",
+          "45": "ROCm0",
+          "46": "ROCm0",
+          "47": "ROCm0",
+          "48": "ROCm0",
+          "49": "ROCm0",
+          "5": "CUDA0",
+          "50": "ROCm0",
+          "51": "ROCm0",
+          "52": "ROCm0",
+          "53": "ROCm0",
+          "54": "ROCm0",
+          "55": "ROCm0",
+          "56": "ROCm0",
+          "57": "ROCm0",
+          "58": "ROCm0",
+          "59": "ROCm0",
+          "6": "CUDA0",
+          "60": "ROCm0",
+          "61": "ROCm0",
+          "62": "ROCm0",
+          "63": "ROCm0",
+          "64": "ROCm0",
+          "65": "ROCm0",
+          "66": "ROCm0",
+          "67": "ROCm0",
+          "68": "ROCm0",
+          "69": "ROCm0",
+          "7": "CUDA0",
+          "70": "ROCm0",
+          "71": "ROCm0",
+          "72": "ROCm0",
+          "73": "ROCm0",
+          "74": "ROCm0",
+          "75": "ROCm0",
+          "76": "ROCm0",
+          "77": "ROCm0",
+          "78": "ROCm0",
+          "79": "ROCm0",
+          "8": "CUDA0",
+          "80": "ROCm0",
+          "9": "CUDA0"
+        },
+        "resources": {
+          "gpu": {
+            "CUDA0": {
+              "peak_temperature_c": 49.0,
+              "peak_used_bytes": 21905801216
+            },
+            "ROCm0": {
+              "peak_temperature_c": 75.0,
+              "peak_used_bytes": 22060376064
+            }
+          },
+          "min_available_bytes": 87460233216,
+          "peak_sampled_hwm_bytes": 2210942976,
+          "peak_sampled_rss_bytes": 2210942976,
+          "peak_swap_used_bytes": 0,
+          "peak_system_nonavailable_bytes": 11313946624,
+          "peak_wait4_rss_bytes": 2209484800
+        },
+        "tg128": {
+          "independent_launch_means": [
+            18.017838254380457,
+            18.06133103295883,
+            18.07589963663628
+          ],
+          "independent_n": 3,
+          "mean": 18.05168964132519,
+          "sample_sd": 0.03020758765342077
+        }
+      },
+      "E": {
+        "label": "Equal mixed",
+        "observations": [
+          {
+            "ordinal": 1,
+            "pp_tokens_s": 721.0796033028363,
+            "round": 1,
+            "tg_tokens_s": 18.28957114108847
+          },
+          {
+            "ordinal": 7,
+            "pp_tokens_s": 715.9188579452419,
+            "round": 2,
+            "tg_tokens_s": 18.277366898461157
+          },
+          {
+            "ordinal": 12,
+            "pp_tokens_s": 716.5756485210654,
+            "round": 3,
+            "tg_tokens_s": 18.279826043603176
+          }
+        ],
+        "pp512": {
+          "independent_launch_means": [
+            721.0796033028363,
+            715.9188579452419,
+            716.5756485210654
+          ],
+          "independent_n": 3,
+          "mean": 717.8580365897145,
+          "sample_sd": 2.809219202989174
+        },
+        "reference_layer_map": {
+          "0": "CUDA0",
+          "1": "CUDA0",
+          "10": "CUDA0",
+          "11": "CUDA0",
+          "12": "CUDA0",
+          "13": "CUDA0",
+          "14": "CUDA0",
+          "15": "CUDA0",
+          "16": "CUDA0",
+          "17": "CUDA0",
+          "18": "CUDA0",
+          "19": "CUDA0",
+          "2": "CUDA0",
+          "20": "CUDA0",
+          "21": "CUDA0",
+          "22": "CUDA0",
+          "23": "CUDA0",
+          "24": "CUDA0",
+          "25": "CUDA0",
+          "26": "CUDA0",
+          "27": "CUDA0",
+          "28": "CUDA0",
+          "29": "CUDA0",
+          "3": "CUDA0",
+          "30": "CUDA0",
+          "31": "CUDA0",
+          "32": "CUDA0",
+          "33": "CUDA0",
+          "34": "CUDA0",
+          "35": "CUDA0",
+          "36": "CUDA0",
+          "37": "CUDA0",
+          "38": "CUDA0",
+          "39": "CUDA0",
+          "4": "CUDA0",
+          "40": "CUDA0",
+          "41": "ROCm0",
+          "42": "ROCm0",
+          "43": "ROCm0",
+          "44": "ROCm0",
+          "45": "ROCm0",
+          "46": "ROCm0",
+          "47": "ROCm0",
+          "48": "ROCm0",
+          "49": "ROCm0",
+          "5": "CUDA0",
+          "50": "ROCm0",
+          "51": "ROCm0",
+          "52": "ROCm0",
+          "53": "ROCm0",
+          "54": "ROCm0",
+          "55": "ROCm0",
+          "56": "ROCm0",
+          "57": "ROCm0",
+          "58": "ROCm0",
+          "59": "ROCm0",
+          "6": "CUDA0",
+          "60": "ROCm0",
+          "61": "ROCm0",
+          "62": "ROCm0",
+          "63": "ROCm0",
+          "64": "ROCm0",
+          "65": "ROCm0",
+          "66": "ROCm0",
+          "67": "ROCm0",
+          "68": "ROCm0",
+          "69": "ROCm0",
+          "7": "CUDA0",
+          "70": "ROCm0",
+          "71": "ROCm0",
+          "72": "ROCm0",
+          "73": "ROCm0",
+          "74": "ROCm0",
+          "75": "ROCm0",
+          "76": "ROCm0",
+          "77": "ROCm0",
+          "78": "ROCm0",
+          "79": "ROCm0",
+          "8": "CUDA0",
+          "80": "ROCm0",
+          "9": "CUDA0"
+        },
+        "resources": {
+          "gpu": {
+            "CUDA0": {
+              "peak_temperature_c": 49.0,
+              "peak_used_bytes": 22419603456
+            },
+            "ROCm0": {
+              "peak_temperature_c": 75.0,
+              "peak_used_bytes": 21575892992
+            }
+          },
+          "min_available_bytes": 87524876288,
+          "peak_sampled_hwm_bytes": 2211921920,
+          "peak_sampled_rss_bytes": 2211921920,
+          "peak_swap_used_bytes": 0,
+          "peak_system_nonavailable_bytes": 11249303552,
+          "peak_wait4_rss_bytes": 2210590720
+        },
+        "tg128": {
+          "independent_launch_means": [
+            18.28957114108847,
+            18.277366898461157,
+            18.279826043603176
+          ],
+          "independent_n": 3,
+          "mean": 18.282254694384267,
+          "sample_sd": 0.006454428169013112
+        }
+      }
+    },
+    "independent_processes": 12,
+    "launch_order": [
+      "E",
+      "D",
+      "A",
+      "B",
+      "D",
+      "B",
+      "E",
+      "A",
+      "B",
+      "A",
+      "D",
+      "E"
+    ],
+    "method": "Arithmetic mean of three internal per-repetition throughputs per independent process; arithmetic mean and sample SD (n-1) across three independent process means. No historical pooling.",
+    "placement_scope": "C0 observed reference map corroborated by quiet C1 allocation/activity; not a new per-layer trace. Indices 0-79 are transformer blocks; 80 is output.",
+    "resource_scope": "Sampled maxima across each configuration's three processes except wait4 lifetime RSS; VRAM includes system-wide background allocations; system nonavailable memory is not process RSS."
+  },
+  "c2": {
+    "correctness": {
+      "atol": 0.0001,
+      "bitwise_identical_logits": true,
+      "different_values": 0,
+      "exact_greedy_id_agreements": 129,
+      "exact_piece_byte_agreements": 129,
+      "finite_float32_values_per_arm": 16545024,
+      "maximum_absolute_difference": 0.0,
+      "outside_tolerance": 0,
+      "raw_bytes_per_arm": 66180096,
+      "raw_logits_sha256": {
+        "T": "86fafdb06385b1605cc1bdd1361a4aff6106748d1ddc9dd7e99eb5f96b7c8e8d",
+        "U": "86fafdb06385b1605cc1bdd1361a4aff6106748d1ddc9dd7e99eb5f96b7c8e8d"
+      },
+      "reference": "U",
+      "rmse": 0.0,
+      "rows": 129,
+      "rtol": 1e-05,
+      "scope": "One predeclared teacher-forced fixture, exact runtimes and settings; not general model correctness or arbitrary-generation equivalence.",
+      "status": "passed",
+      "vocabulary": 128256
+    },
+    "overhead": {
+      "independent_pairs": 6,
+      "internal_repetitions_per_process": 3,
+      "limitations": "Nominal t interval assumes independent approximately normal paired log ratios. Six blocks are small; time trends/serial dependence and multiple endpoints are not resolved. Report order strata and all pairs; no automatic causal/bottleneck claim.",
+      "method": "Six independent paired log ratios, Student t df=5 critical 2.570581835636305; correlated internal repetitions averaged within each process.",
+      "pairs": [
+        {
+          "T_mean_elapsed_ns": 718745877.6666666,
+          "T_over_U_elapsed_ratio": 1.010886838071692,
+          "U_mean_elapsed_ns": 711005278.3333334,
+          "block": 1,
+          "elapsed_difference_ns": 7740599.333333254,
+          "log_elapsed_ratio": 0.01082800308291693,
+          "order": "UT",
+          "overhead_percent": 1.0886838071691995,
+          "workload": "pp512"
+        },
+        {
+          "T_mean_elapsed_ns": 707687981.6666666,
+          "T_over_U_elapsed_ratio": 1.0008822159781299,
+          "U_mean_elapsed_ns": 707064198.3333334,
+          "block": 2,
+          "elapsed_difference_ns": 623783.3333332539,
+          "log_elapsed_ratio": 0.0008818270543402195,
+          "order": "TU",
+          "overhead_percent": 0.08822159781298744,
+          "workload": "pp512"
+        },
+        {
+          "T_mean_elapsed_ns": 710414292.6666666,
+          "T_over_U_elapsed_ratio": 1.004354715638598,
+          "U_mean_elapsed_ns": 707334054.0,
+          "block": 3,
+          "elapsed_difference_ns": 3080238.666666627,
+          "log_elapsed_ratio": 0.004345261301812851,
+          "order": "UT",
+          "overhead_percent": 0.4354715638597906,
+          "workload": "pp512"
+        },
+        {
+          "T_mean_elapsed_ns": 707367161.3333334,
+          "T_over_U_elapsed_ratio": 0.9950325712156741,
+          "U_mean_elapsed_ns": 710898499.0,
+          "block": 4,
+          "elapsed_difference_ns": -3531337.666666627,
+          "log_elapsed_ratio": -0.00497980746919436,
+          "order": "TU",
+          "overhead_percent": -0.4967428784325878,
+          "workload": "pp512"
+        },
+        {
+          "T_mean_elapsed_ns": 709006904.0,
+          "T_over_U_elapsed_ratio": 0.9968663812788955,
+          "U_mean_elapsed_ns": 711235645.3333334,
+          "block": 5,
+          "elapsed_difference_ns": -2228741.333333373,
+          "log_elapsed_ratio": -0.0031385387853412883,
+          "order": "UT",
+          "overhead_percent": -0.3133618721104514,
+          "workload": "pp512"
+        },
+        {
+          "T_mean_elapsed_ns": 708188109.0,
+          "T_over_U_elapsed_ratio": 0.9985468333420561,
+          "U_mean_elapsed_ns": 709218722.0,
+          "block": 6,
+          "elapsed_difference_ns": -1030613.0,
+          "log_elapsed_ratio": -0.0014542235286086995,
+          "order": "TU",
+          "overhead_percent": -0.14531666579439273,
+          "workload": "pp512"
+        },
+        {
+          "T_mean_elapsed_ns": 7057475553.0,
+          "T_over_U_elapsed_ratio": 1.00203533549722,
+          "U_mean_elapsed_ns": 7043140399.333333,
+          "block": 1,
+          "elapsed_difference_ns": 14335153.666666985,
+          "log_elapsed_ratio": 0.002033267008164159,
+          "order": "UT",
+          "overhead_percent": 0.20353354972200144,
+          "workload": "tg128"
+        },
+        {
+          "T_mean_elapsed_ns": 6918098355.0,
+          "T_over_U_elapsed_ratio": 1.0080687913814033,
+          "U_mean_elapsed_ns": 6862724463.0,
+          "block": 2,
+          "elapsed_difference_ns": 55373892.0,
+          "log_elapsed_ratio": 0.008036412738623067,
+          "order": "TU",
+          "overhead_percent": 0.8068791381403262,
+          "workload": "tg128"
+        },
+        {
+          "T_mean_elapsed_ns": 6946205005.0,
+          "T_over_U_elapsed_ratio": 1.0114489796699282,
+          "U_mean_elapsed_ns": 6867578241.333333,
+          "block": 3,
+          "elapsed_difference_ns": 78626763.66666698,
+          "log_elapsed_ratio": 0.011383936086508766,
+          "order": "UT",
+          "overhead_percent": 1.1448979669928194,
+          "workload": "tg128"
+        },
+        {
+          "T_mean_elapsed_ns": 6913180233.0,
+          "T_over_U_elapsed_ratio": 1.0027723493788951,
+          "U_mean_elapsed_ns": 6894067469.333333,
+          "block": 4,
+          "elapsed_difference_ns": 19112763.666666985,
+          "log_elapsed_ratio": 0.002768513506306324,
+          "order": "TU",
+          "overhead_percent": 0.2772349378895145,
+          "workload": "tg128"
+        },
+        {
+          "T_mean_elapsed_ns": 6925608556.666667,
+          "T_over_U_elapsed_ratio": 1.005374280300579,
+          "U_mean_elapsed_ns": 6888587357.333333,
+          "block": 5,
+          "elapsed_difference_ns": 37021199.33333397,
+          "log_elapsed_ratio": 0.005359890390121728,
+          "order": "UT",
+          "overhead_percent": 0.537428030057896,
+          "workload": "tg128"
+        },
+        {
+          "T_mean_elapsed_ns": 6941560913.0,
+          "T_over_U_elapsed_ratio": 1.0066308325956765,
+          "U_mean_elapsed_ns": 6895835780.333333,
+          "block": 6,
+          "elapsed_difference_ns": 45725132.666666985,
+          "log_elapsed_ratio": 0.006608945325827192,
+          "order": "TU",
+          "overhead_percent": 0.6630832595676539,
+          "workload": "tg128"
+        }
+      ],
+      "primary_workloads": {
+        "pp512": {
+          "arithmetic_mean_pair_percent": 0.10949259208409094,
+          "geometric_elapsed_ratio": 1.001081004140228,
+          "geometric_overhead_percent": 0.10810041402279792,
+          "mean_log_elapsed_ratio": 0.0010804202759876088,
+          "nominal_95pct_ci_percent": [
+            -0.49660858856359175,
+            0.7164843966538074
+          ],
+          "order_strata": {
+            "TU": {
+              "arithmetic_mean_overhead_percent": -0.18461264880466435,
+              "geometric_overhead_percent": -0.18490230944924652,
+              "mean_log_elapsed_ratio": -0.0018507346478209466,
+              "n_pairs": 3,
+              "sd_pair_percent": 0.29445541314072105
+            },
+            "UT": {
+              "arithmetic_mean_overhead_percent": 0.40359783297284624,
+              "geometric_overhead_percent": 0.4019632337923804,
+              "mean_log_elapsed_ratio": 0.004011575199796165,
+              "n_pairs": 3,
+              "sd_pair_percent": 0.7015660857946131
+            }
+          },
+          "sd_log_elapsed_ratio": 0.005773463291134031,
+          "sd_pair_percent": 0.579100212819766
+        },
+        "tg128": {
+          "arithmetic_mean_pair_percent": 0.6055094803950353,
+          "geometric_elapsed_ratio": 1.0060500556119703,
+          "geometric_overhead_percent": 0.6050055611970317,
+          "mean_log_elapsed_ratio": 0.006031827509258539,
+          "nominal_95pct_ci_percent": [
+            0.23967482044563548,
+            0.9716677762411872
+          ],
+          "order_strata": {
+            "TU": {
+              "arithmetic_mean_overhead_percent": 0.5823991118658315,
+              "geometric_overhead_percent": 0.5821503329838551,
+              "mean_log_elapsed_ratio": 0.005804623856918861,
+              "n_pairs": 3,
+              "sd_pair_percent": 0.27388536558678633
+            },
+            "UT": {
+              "arithmetic_mean_overhead_percent": 0.6286198489242389,
+              "geometric_overhead_percent": 0.6278659827914889,
+              "mean_log_elapsed_ratio": 0.006259031161598218,
+              "n_pairs": 3,
+              "sd_pair_percent": 0.4772616707813656
+            }
+          },
+          "sd_log_elapsed_ratio": 0.0034665745915388258,
+          "sd_pair_percent": 0.34893791039684696
+        }
+      }
+    }
+  },
+  "c3": {
+    "interpretation": "A longer ROCm graph region lies on the serialized TG dependency path; no removable kernel bottleneck or implementation-ready optimization is established.",
+    "limitations": [
+      "Overlapping inclusive scopes must not be summed into a wall-time budget.",
+      "Same-device stream intervals include dependencies and gaps; they are not kernel-only time.",
+      "CPU synchronization duration is not wasted GPU time.",
+      "Logical tensor bytes are not measured physical PCIe traffic.",
+      "Independent CUDA/HIP clock timestamps are not subtracted; precise cross-device overlap is unknown.",
+      "Native copy-leg durations are not added to their inclusive host-stage parent duration.",
+      "Instrumented observations are not corrected by subtracting average instrumentation overhead."
+    ],
+    "method": "Means and sample SD across six T process means, with three correlated repetitions within each process. The earlier single diagnostic is excluded.",
+    "metrics": {
+      "pp512": {
+        "correlated_internal_repetitions_total": 18,
+        "independent_T_processes": 6,
+        "metrics": {
+          "CUDA0_graph_stream_ms_sum": {
+            "between_process_sample_sd": 6.338069262588288,
+            "process_max": 199.03041196666666,
+            "process_mean": 186.51122027222223,
+            "process_min": 181.92197290000001
+          },
+          "ROCm0_graph_stream_ms_sum": {
+            "between_process_sample_sd": 0.3368818149735515,
+            "process_max": 595.9868166666666,
+            "process_mean": 595.6162789444444,
+            "process_min": 595.076874
+          },
+          "backend_sync_cpu_union_ms": {
+            "between_process_sample_sd": 2.1340450420235073,
+            "process_max": 630.6715156666667,
+            "process_mean": 626.8072168333333,
+            "process_min": 624.8681006666667
+          },
+          "cross_fallback_cpu_union_ms": {
+            "between_process_sample_sd": 5.183099047138625,
+            "process_max": 151.95216966666666,
+            "process_mean": 141.68431044444444,
+            "process_min": 137.91251499999998
+          },
+          "fallback_nested_sync_union_ms": {
+            "between_process_sample_sd": 4.832917049797256,
+            "process_max": 147.70576266666666,
+            "process_mean": 138.2403176111111,
+            "process_min": 134.857554
+          },
+          "fallback_uncovered_cpu_ms": {
+            "between_process_sample_sd": 0.007647934476900475,
+            "process_max": 0.036694,
+            "process_mean": 0.021282555555555555,
+            "process_min": 0.016340666666666667
+          },
+          "graph_cpu_submit_union_ms": {
+            "between_process_sample_sd": 1.9554491344697769,
+            "process_max": 77.000308,
+            "process_mean": 73.22572427777777,
+            "process_min": 71.635028
+          },
+          "graph_split_allocate_cpu_union_ms": {
+            "between_process_sample_sd": 0.06623006332027326,
+            "process_max": 1.0898893333333333,
+            "process_mean": 0.9759602222222222,
+            "process_min": 0.904237
+          },
+          "host_stage_cpu_union_ms": {
+            "between_process_sample_sd": 0.542210797175474,
+            "process_max": 4.209713,
+            "process_mean": 3.422710277777778,
+            "process_min": 3.0237413333333336
+          },
+          "host_stage_native_legs_stream_ms_sum": {
+            "between_process_sample_sd": 0.49019444030912995,
+            "process_max": 2.981597298333333,
+            "process_mean": 2.2927925467777777,
+            "process_min": 1.9469049863333334
+          },
+          "host_stage_pct_of_phase": {
+            "between_process_sample_sd": 0.0744502479727314,
+            "process_max": 0.5862868056364833,
+            "process_mean": 0.48179302388465944,
+            "process_min": 0.42742117882715464
+          },
+          "phase_wall_ms": {
+            "between_process_sample_sd": 4.309779933920176,
+            "process_max": 718.744431,
+            "process_mean": 710.2338916111111,
+            "process_min": 707.3661013333333
+          }
+        }
+      },
+      "tg128": {
+        "correlated_internal_repetitions_total": 18,
+        "independent_T_processes": 6,
+        "metrics": {
+          "CUDA0_graph_stream_ms_sum": {
+            "between_process_sample_sd": 46.245163885163116,
+            "process_max": 2137.763397933333,
+            "process_mean": 2046.3521885277778,
+            "process_min": 2015.9690936
+          },
+          "ROCm0_graph_stream_ms_sum": {
+            "between_process_sample_sd": 1.5911577091286015,
+            "process_max": 4775.9363746,
+            "process_mean": 4773.727569588889,
+            "process_min": 4772.3237801000005
+          },
+          "backend_sync_cpu_union_ms": {
+            "between_process_sample_sd": 47.19850274463843,
+            "process_max": 6919.959851333333,
+            "process_mean": 6826.470761833333,
+            "process_min": 6795.190949
+          },
+          "cross_fallback_cpu_union_ms": {
+            "between_process_sample_sd": 49.62052695143123,
+            "process_max": 2214.437078,
+            "process_mean": 2116.4122679444445,
+            "process_min": 2084.003670666667
+          },
+          "fallback_nested_sync_union_ms": {
+            "between_process_sample_sd": 46.141754402617096,
+            "process_max": 2138.380682,
+            "process_mean": 2047.1749418333334,
+            "process_min": 2016.847809
+          },
+          "fallback_uncovered_cpu_ms": {
+            "between_process_sample_sd": 0.098913095896235,
+            "process_max": 0.35704633333333335,
+            "process_mean": 0.17729266666666668,
+            "process_min": 0.102368
+          },
+          "graph_cpu_submit_union_ms": {
+            "between_process_sample_sd": 1.1878943060919926,
+            "process_max": 10.345903999999999,
+            "process_mean": 8.150926333333333,
+            "process_min": 7.148230333333333
+          },
+          "graph_split_allocate_cpu_union_ms": {
+            "between_process_sample_sd": 0.0,
+            "process_max": 0.0,
+            "process_mean": 0.0,
+            "process_min": 0.0
+          },
+          "host_stage_cpu_union_ms": {
+            "between_process_sample_sd": 3.435733698614911,
+            "process_max": 75.69934966666666,
+            "process_mean": 69.06003344444444,
+            "process_min": 66.26743433333334
+          },
+          "host_stage_native_legs_stream_ms_sum": {
+            "between_process_sample_sd": 0.06746017685465025,
+            "process_max": 2.89641034364,
+            "process_mean": 2.7811257826633335,
+            "process_min": 2.7131660035933334
+          },
+          "host_stage_pct_of_phase": {
+            "between_process_sample_sd": 0.04116256573112885,
+            "process_max": 1.0718730999684658,
+            "process_mean": 0.9931029356963371,
+            "process_min": 0.9585690016800936
+          },
+          "phase_wall_ms": {
+            "between_process_sample_sd": 54.044786214239856,
+            "process_max": 7057.474576333333,
+            "process_mean": 6950.353875388889,
+            "process_min": 6913.179256333334
+          }
+        }
+      }
+    },
+    "processes": [
+      {
+        "CUDA0_graph_stream_ms_sum": 199.03041196666666,
+        "ROCm0_graph_stream_ms_sum": 595.9477903333333,
+        "backend_sync_cpu_union_ms": 630.6715156666667,
+        "cross_fallback_cpu_union_ms": 151.95216966666666,
+        "fallback_nested_sync_union_ms": 147.70576266666666,
+        "fallback_uncovered_cpu_ms": 0.036694,
+        "graph_cpu_submit_union_ms": 77.000308,
+        "graph_split_allocate_cpu_union_ms": 1.0898893333333333,
+        "host_stage_cpu_union_ms": 4.209713,
+        "host_stage_native_legs_stream_ms_sum": 2.981597298333333,
+        "host_stage_pct_of_phase": 0.5862868056364833,
+        "internal_repetitions_correlated": 3,
+        "phase_wall_ms": 718.744431,
+        "process": "T1",
+        "workload": "pp512"
+      },
+      {
+        "CUDA0_graph_stream_ms_sum": 2137.763397933333,
+        "ROCm0_graph_stream_ms_sum": 4775.9363746,
+        "backend_sync_cpu_union_ms": 6919.959851333333,
+        "cross_fallback_cpu_union_ms": 2214.437078,
+        "fallback_nested_sync_union_ms": 2138.380682,
+        "fallback_uncovered_cpu_ms": 0.35704633333333335,
+        "graph_cpu_submit_union_ms": 10.345903999999999,
+        "graph_split_allocate_cpu_union_ms": 0.0,
+        "host_stage_cpu_union_ms": 75.69934966666666,
+        "host_stage_native_legs_stream_ms_sum": 2.89641034364,
+        "host_stage_pct_of_phase": 1.0718730999684658,
+        "internal_repetitions_correlated": 3,
+        "phase_wall_ms": 7057.474576333333,
+        "process": "T1",
+        "workload": "tg128"
+      },
+      {
+        "CUDA0_graph_stream_ms_sum": 183.07969153333335,
+        "ROCm0_graph_stream_ms_sum": 595.076874,
+        "backend_sync_cpu_union_ms": 624.8681006666667,
+        "cross_fallback_cpu_union_ms": 137.91251499999998,
+        "fallback_nested_sync_union_ms": 134.857554,
+        "fallback_uncovered_cpu_ms": 0.01967,
+        "graph_cpu_submit_union_ms": 73.062478,
+        "graph_split_allocate_cpu_union_ms": 0.9834526666666666,
+        "host_stage_cpu_union_ms": 3.035291,
+        "host_stage_native_legs_stream_ms_sum": 1.9492863316666666,
+        "host_stage_pct_of_phase": 0.42891481395494985,
+        "internal_repetitions_correlated": 3,
+        "phase_wall_ms": 707.6867383333333,
+        "process": "T2",
+        "workload": "pp512"
+      },
+      {
+        "CUDA0_graph_stream_ms_sum": 2015.9690936,
+        "ROCm0_graph_stream_ms_sum": 4772.743544666667,
+        "backend_sync_cpu_union_ms": 6795.190949,
+        "cross_fallback_cpu_union_ms": 2084.2490503333333,
+        "fallback_nested_sync_union_ms": 2016.847809,
+        "fallback_uncovered_cpu_ms": 0.18787500000000001,
+        "graph_cpu_submit_union_ms": 7.958830000000001,
+        "graph_split_allocate_cpu_union_ms": 0.0,
+        "host_stage_cpu_union_ms": 67.21336633333334,
+        "host_stage_native_legs_stream_ms_sum": 2.8144180076666667,
+        "host_stage_pct_of_phase": 0.9712461734743549,
+        "internal_repetitions_correlated": 3,
+        "phase_wall_ms": 6918.097521666667,
+        "process": "T2",
+        "workload": "tg128"
+      },
+      {
+        "CUDA0_graph_stream_ms_sum": 186.26372403333335,
+        "ROCm0_graph_stream_ms_sum": 595.5735933333333,
+        "backend_sync_cpu_union_ms": 627.681031,
+        "cross_fallback_cpu_union_ms": 141.62010966666668,
+        "fallback_nested_sync_union_ms": 138.489297,
+        "fallback_uncovered_cpu_ms": 0.017467333333333335,
+        "graph_cpu_submit_union_ms": 72.815067,
+        "graph_split_allocate_cpu_union_ms": 0.9907123333333333,
+        "host_stage_cpu_union_ms": 3.113345333333333,
+        "host_stage_native_legs_stream_ms_sum": 2.021665331,
+        "host_stage_pct_of_phase": 0.43820526340693594,
+        "internal_repetitions_correlated": 3,
+        "phase_wall_ms": 710.4131126666666,
+        "process": "T3",
+        "workload": "pp512"
+      },
+      {
+        "CUDA0_graph_stream_ms_sum": 2043.4470366,
+        "ROCm0_graph_stream_ms_sum": 4772.3237801000005,
+        "backend_sync_cpu_union_ms": 6822.078714666666,
+        "cross_fallback_cpu_union_ms": 2112.7442616666667,
+        "fallback_nested_sync_union_ms": 2044.1880549999998,
+        "fallback_uncovered_cpu_ms": 0.20423866666666668,
+        "graph_cpu_submit_union_ms": 8.566744666666667,
+        "graph_split_allocate_cpu_union_ms": 0.0,
+        "host_stage_cpu_union_ms": 68.351968,
+        "host_stage_native_legs_stream_ms_sum": 2.764248338283333,
+        "host_stage_pct_of_phase": 0.9837473928037657,
+        "internal_repetitions_correlated": 3,
+        "phase_wall_ms": 6946.204105,
+        "process": "T3",
+        "workload": "tg128"
+      },
+      {
+        "CUDA0_graph_stream_ms_sum": 183.33875146666668,
+        "ROCm0_graph_stream_ms_sum": 595.6569823333333,
+        "backend_sync_cpu_union_ms": 626.0565996666667,
+        "cross_fallback_cpu_union_ms": 139.29727166666666,
+        "fallback_nested_sync_union_ms": 136.25718966666668,
+        "fallback_uncovered_cpu_ms": 0.016340666666666667,
+        "graph_cpu_submit_union_ms": 71.76889,
+        "graph_split_allocate_cpu_union_ms": 0.970729,
+        "host_stage_cpu_union_ms": 3.0237413333333336,
+        "host_stage_native_legs_stream_ms_sum": 1.9469049863333334,
+        "host_stage_pct_of_phase": 0.42742117882715464,
+        "internal_repetitions_correlated": 3,
+        "phase_wall_ms": 707.3661013333333,
+        "process": "T4",
+        "workload": "pp512"
+      },
+      {
+        "CUDA0_graph_stream_ms_sum": 2016.7920109333334,
+        "ROCm0_graph_stream_ms_sum": 4772.5840935666665,
+        "backend_sync_cpu_union_ms": 6795.763884,
+        "cross_fallback_cpu_union_ms": 2084.003670666667,
+        "fallback_nested_sync_union_ms": 2017.6338683333333,
+        "fallback_uncovered_cpu_ms": 0.102368,
+        "graph_cpu_submit_union_ms": 7.148230333333333,
+        "graph_split_allocate_cpu_union_ms": 0.0,
+        "host_stage_cpu_union_ms": 66.26743433333334,
+        "host_stage_native_legs_stream_ms_sum": 2.72260333319,
+        "host_stage_pct_of_phase": 0.9585690016800936,
+        "internal_repetitions_correlated": 3,
+        "phase_wall_ms": 6913.179256333334,
+        "process": "T4",
+        "workload": "tg128"
+      },
+      {
+        "CUDA0_graph_stream_ms_sum": 185.43276973333334,
+        "ROCm0_graph_stream_ms_sum": 595.4556170000001,
+        "backend_sync_cpu_union_ms": 626.3543663333334,
+        "cross_fallback_cpu_union_ms": 140.28832766666667,
+        "fallback_nested_sync_union_ms": 137.13797466666668,
+        "fallback_uncovered_cpu_ms": 0.019333333333333334,
+        "graph_cpu_submit_union_ms": 73.07257466666667,
+        "graph_split_allocate_cpu_union_ms": 0.904237,
+        "host_stage_cpu_union_ms": 3.1310196666666665,
+        "host_stage_native_legs_stream_ms_sum": 1.9933683376666667,
+        "host_stage_pct_of_phase": 0.44144706502954906,
+        "internal_repetitions_correlated": 3,
+        "phase_wall_ms": 709.0058673333333,
+        "process": "T5",
+        "workload": "pp512"
+      },
+      {
+        "CUDA0_graph_stream_ms_sum": 2024.2039700666667,
+        "ROCm0_graph_stream_ms_sum": 4775.541882866667,
+        "backend_sync_cpu_union_ms": 6806.201096,
+        "cross_fallback_cpu_union_ms": 2092.5670283333334,
+        "fallback_nested_sync_union_ms": 2025.138023,
+        "fallback_uncovered_cpu_ms": 0.10950800000000001,
+        "graph_cpu_submit_union_ms": 7.343428,
+        "graph_split_allocate_cpu_union_ms": 0.0,
+        "host_stage_cpu_union_ms": 67.31949733333333,
+        "host_stage_native_legs_stream_ms_sum": 2.7131660035933334,
+        "host_stage_pct_of_phase": 0.9720239356941172,
+        "internal_repetitions_correlated": 3,
+        "phase_wall_ms": 6925.60767,
+        "process": "T5",
+        "workload": "tg128"
+      },
+      {
+        "CUDA0_graph_stream_ms_sum": 181.92197290000001,
+        "ROCm0_graph_stream_ms_sum": 595.9868166666666,
+        "backend_sync_cpu_union_ms": 625.2116876666666,
+        "cross_fallback_cpu_union_ms": 139.035469,
+        "fallback_nested_sync_union_ms": 134.99412766666666,
+        "fallback_uncovered_cpu_ms": 0.01819,
+        "graph_cpu_submit_union_ms": 71.635028,
+        "graph_split_allocate_cpu_union_ms": 0.916741,
+        "host_stage_cpu_union_ms": 4.023151333333334,
+        "host_stage_native_legs_stream_ms_sum": 2.8639329956666666,
+        "host_stage_pct_of_phase": 0.5684830164528838,
+        "internal_repetitions_correlated": 3,
+        "phase_wall_ms": 708.187099,
+        "process": "T6",
+        "workload": "pp512"
+      },
+      {
+        "CUDA0_graph_stream_ms_sum": 2039.9376220333334,
+        "ROCm0_graph_stream_ms_sum": 4773.235741733333,
+        "backend_sync_cpu_union_ms": 6819.6300759999995,
+        "cross_fallback_cpu_union_ms": 2110.4725186666665,
+        "fallback_nested_sync_union_ms": 2040.8612136666668,
+        "fallback_uncovered_cpu_ms": 0.10271999999999999,
+        "graph_cpu_submit_union_ms": 7.542421,
+        "graph_split_allocate_cpu_union_ms": 0.0,
+        "host_stage_cpu_union_ms": 69.508585,
+        "host_stage_native_legs_stream_ms_sum": 2.775908669606667,
+        "host_stage_pct_of_phase": 1.0011580105572255,
+        "internal_repetitions_correlated": 3,
+        "phase_wall_ms": 6941.560123,
+        "process": "T6",
+        "workload": "tg128"
+      }
+    ],
+    "routing": {
+      "pp512": {
+        "adjacent_graph_pairs": 54,
+        "direction": "CUDA0 -> host -> ROCm0",
+        "graph_kinds_per_repetition": {
+          "CUDA0/graph_replay": 1,
+          "CUDA0/graph_uncaptured": 3,
+          "ROCm0/graph_replay": 1,
+          "ROCm0/graph_uncaptured": 3
+        },
+        "logical_bytes_per_repetition": 16777216,
+        "measured_repetitions": 18,
+        "parents_per_repetition": 4,
+        "prior_rocm_complete_before_next_cuda_enqueue": 18,
+        "source_complete_then_stage_then_destination_submit": 72
+      },
+      "tg128": {
+        "adjacent_graph_pairs": 2286,
+        "direction": "CUDA0 -> host -> ROCm0",
+        "graph_kinds_per_repetition": {
+          "CUDA0/graph_replay": 128,
+          "ROCm0/graph_replay": 128
+        },
+        "logical_bytes_per_repetition": 4194304,
+        "measured_repetitions": 18,
+        "parents_per_repetition": 128,
+        "prior_rocm_complete_before_next_cuda_enqueue": 2286,
+        "source_complete_then_stage_then_destination_submit": 2304
+      }
+    }
+  },
+  "identity": {
+    "cpu": "Ryzen 9 9950X",
+    "gpus": [
+      "RTX 5090 32 GB (CUDA0)",
+      "Radeon AI PRO R9700 32 GB (ROCm0)"
+    ],
+    "host_ram_nominal_gb": 96,
+    "llama_cpp_revision": "5e03bdd8700948b9c41c54dd1b00f28a2aebc03f",
+    "model": "Llama 3.3 70B Instruct Q4_K_M",
+    "model_bytes": 42520398816,
+    "model_sha256": "32df3baccb556f9840059b2528b2dee4d3d516b24afdfb9d0c56ff5f63e3a664"
+  },
+  "provenance": {
+    "c1_performance": {
+      "archive": "stage-c1-memtotal-execution-20261025-zazshxhs",
+      "bytes": 7462,
+      "file": "PERFORMANCE_SUMMARY.json",
+      "sha256": "91f3e24e6b6fd7acc00c10a7deb014ec1b262c5800ac42df154bcb138284238e"
+    },
+    "c1_placement": {
+      "archive": "stage-c1-memtotal-execution-20261025-zazshxhs",
+      "bytes": 34971,
+      "file": "PLACEMENT_EVIDENCE.json",
+      "sha256": "324fe98dcb3a68b33bc2a6dd10a6c922ef320ed6075eb9d50578a334d008fea0"
+    },
+    "c1_resources": {
+      "archive": "stage-c1-memtotal-execution-20261025-zazshxhs",
+      "bytes": 20139,
+      "file": "RESOURCE_SUMMARY.json",
+      "sha256": "1262f1b9dab370e333364f7d68a525f2778ef089c73680d355eb3399d206e3e9"
+    },
+    "c2_equivalence": {
+      "archive": "c2-equivalence-execution-review-20261027",
+      "bytes": 1854,
+      "file": "OFFLINE_READBACK_VALIDATION.json",
+      "sha256": "568382245bb638ae321ed380e4f9ac80374011fa4b6960ba9236263483135371"
+    },
+    "c2_overhead": {
+      "archive": "c2-overhead-execution-review-20261027",
+      "bytes": 4697,
+      "file": "INDEPENDENT_STATISTICAL_REPLAY.json",
+      "sha256": "36434884fe9fdb090673e61bd07cafcebe9d3e1c56c614f3277fa01a201766d8"
+    },
+    "c2_pairs": {
+      "archive": "c2-overhead-execution-review-20261027",
+      "bytes": 1573,
+      "file": "PAIRED_RESULTS.csv",
+      "sha256": "f9a39fc3079d7bcfd5a19878f446af448ff02ca70eeef1ec6a5bc860a7ae8e80"
+    },
+    "c3_analysis": {
+      "archive": "c3-attribution-preparation-20261030",
+      "bytes": 197037,
+      "file": "ARCHIVED_TRACE_ANALYSIS.json",
+      "sha256": "afeb7b1595cf64b6e51efa03abeaf4388d0eeb74266c6d41498b5350449c960c"
+    },
+    "c3_processes": {
+      "archive": "c3-attribution-preparation-20261030",
+      "bytes": 4002,
+      "file": "ARCHIVED_PROCESS_TABLE.csv",
+      "sha256": "a578079424e20876c12c680fc744e1698f8b52ac66e152b8bc8cab1e5e3a1b95"
+    }
+  },
+  "review_status": "Owner reports independent ChatGPT acceptance of the original C1/C2/C3 evidence. This C4 public projection requires its own review.",
+  "schema": "heterollm.portfolio.v1",
+  "scope": "Public allowlisted projection of accepted C1/C2/C3 analyses; no new GPU experiment or rewritten historical result.",
+  "units": {
+    "duration": "milliseconds unless field says ns",
+    "memory": "bytes; GiB = bytes / 2**30",
+    "percent": "percent; SD of percentages is percentage points",
+    "temperature": "degrees Celsius",
+    "throughput": "tokens/second"
+  }
+}

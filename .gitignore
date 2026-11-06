@@ -1,0 +1,31 @@
+# Preserve local research; exclude bulk and local state from future publication.
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+dist/
+build/
+models/
+llama.cpp/
+/runtime-c2-trace/
+/runtime-c2-trace-v2/
+/runtime-c2-phase-v3/
+studio/
+runs/
+exports/
+*.gguf
+*.safetensors
+*.bin
+*.so*
+.env
+.env.*
+*token*
+# Public deterministic numerical fixture, not an authentication credential.
+!/instrumentation/calibration/tokens.txt
+*credentials*
+# Historical evidence stays on disk; publish reviewed small extracts explicitly.
+experiments/
+audits/
+evidence/preflight-*/
+# Original fixed-output historical runner, preserved locally unchanged.
+/scripts-run-exp001.sh

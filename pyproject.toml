@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "heterollm"
+version = "0.1.0"
+description = "Reproducible CUDA/ROCm inference measurement, validation, and supervision for llama.cpp"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE", "NOTICE.md", "docs/UPSTREAM_LICENSE.txt", "docs/licenses/DejaVu-LICENSE.txt"]
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+heterollm = "heterollm.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["heterollm*"]
