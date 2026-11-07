@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="light">
-  <title>HeteroLLM — GPU systems engineering by Jae</title>
-  <meta name="description" content="A systems engineering case study in reliable tracing, controlled benchmarks, and 70B inference across NVIDIA CUDA and AMD ROCm. Source code, measurements, and validation included.">
-  <meta property="og:title" content="HeteroLLM — Making mixed-GPU inference measurable">
-  <meta property="og:description" content="The recorder lost 22,336 spans. The repaired capture lost zero. Explore the code, controlled measurements, and validation behind the result.">
+  <title>HeteroLLM — Heterogeneous GPU Inference | Systems Engineering</title>
+  <meta name="description" content="A real GPU systems case study: running Llama 3.3 70B across NVIDIA CUDA and AMD ROCm, fixing lost trace data, and verifying measurement overhead. Explore the code and results.">
+  <meta property="og:title" content="HeteroLLM — 70B Inference Across NVIDIA + AMD">
+  <meta property="og:description" content="An engineering case study in mixed-GPU inference, a repaired C++ trace recorder, reproducible benchmarks, and numerical validation.">
   <meta property="og:type" content="website">
   <style>
     :root{--paper:#f5f3ed;--white:#fffefb;--ink:#162b3b;--muted:#53636b;--line:#d5dad4;--green:#315f4c;--lime:#d5ebc4;--blue:#bdd6e7;--orange:#d79165;--mono:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;--sans:Inter,"Helvetica Neue",Arial,sans-serif}
@@ -24,6 +24,56 @@
     @media(max-width:360px){.owner{display:none}.navlinks{margin-left:auto}.hero h1{font-size:42px}}
     @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important}}
     @media print{body{font-size:10pt;background:white;color:#111}.wrap{max-width:none;padding:0}.skip,.navlinks,.hero-actions,.hero-note,.toggle,.code-tabs,.source-actions,.benchmark-links,.evidence-link,.data-table summary{display:none!important}header{border-bottom:1px solid #888}.nav{height:48px}.hero{padding:28px 0;gap:30px;grid-template-columns:1fr 1fr}h1{font-size:34px;letter-spacing:-1.5px}.hero-lead{font-size:12px}.trace-card{box-shadow:none;padding:18px;-webkit-print-color-adjust:exact;print-color-adjust:exact}.trace-numbers b{font-size:36px}.trace-caption{font-size:10px;margin-bottom:15px}.trace-row{padding-top:10px}.trace-row+.trace-row{margin-top:10px}.trace-foot{margin-top:12px;padding-top:10px}.tech-strip{padding:12px 0}.tech-items{gap:20px}section{padding:28px 0;break-inside:avoid}.section-head{grid-template-columns:135px 1fr;gap:20px;margin-bottom:20px}.section-head h2{font-size:25px}.section-head p{font-size:11px;margin-top:10px}.section-no{font-size:8px}.problem-grid{grid-template-columns:135px 1fr;gap:20px}.spec strong{font-size:18px}.spec span{font-size:9px}.architecture{padding:18px}.gpu-path{grid-template-columns:1fr 75px 1fr}.gpu{padding:16px}.gpu h3{font-size:16px}.architecture figcaption{font-size:9px}.repair-body{gap:25px}.steps p{font-size:10px}.steps h3{font-size:12px}.steps li{padding-bottom:15px}.steps li+li{padding-top:15px}.repair-evidence{padding:20px}.proof-line strong{font-size:22px}.proof-line span{font-size:10px}.code-panel{margin-top:20px}.code-inner{padding:16px}.code-panel pre{font-size:8px}.code-explain{font-size:9px}.benchmark{background:#142633;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:26px 18px}.plot-card{padding:20px}.plot-top{margin-bottom:20px}.chart-row{margin:17px 0;grid-template-columns:130px 1fr 105px}.chart-label{font-size:10px}.chart-value{font-size:10px}.chart-track{height:19px}.axis{grid-template-columns:130px 1fr 105px}.plot figcaption{font-size:9px;margin-top:20px;padding-top:15px}.data-table{display:none}.validation-item h3{font-size:32px}.validation-item>p{font-size:10px}.scope-note{font-size:9px}.supervision{padding:20px;margin-top:23px}.supervision p{font-size:10px}.supervision li{font-size:9px}.source-summary p{font-size:10px}.file-list p{font-size:9px}.file-list code{font-size:9px}.boundary{margin-top:23px;padding-top:20px}.boundary p{font-size:9px}footer{padding:18px 0;background:white}.footer-inner p{font-size:8px}a{text-decoration:none}}
+
+/* Portfolio refresh: a more focused first impression, transparent evidence, clean closing CTA. */
+:root { --paper:#f6f7f5; --white:#fff; --ink:#102333; --muted:#546775; --line:#d9e2e1; --green:#0c8069; --lime:#cdf6df; --blue:#bdd6e7; --orange:#e99876 }
+body {background:#f6f8f7}
+header {background:#ffffffee; border-bottom-color:#d9e3df}
+.nav .wordmark {font-weight:800;letter-spacing:-.9px}
+.nav .nav-download {border-radius:7px; background:#173847; color:white; border-color:#173847; transition:background .2s,transform .2s}
+.nav .nav-download:hover {background:#265a63;transform:translateY(-1px);text-decoration:none}
+.hero {position:relative;isolation:isolate;overflow:hidden; margin:25px 0 9px; padding:68px 50px 60px; background:linear-gradient(118deg,#0b1929 0%,#133243 57%,#1b4752 100%); border:1px solid #29535e; border-radius:22px; color:#f5f9f6;gap:36px;box-shadow:0 22px 60px rgba(16,39,48,.12)}
+.hero:before {content:"";position:absolute;z-index:-1;top:-160px;right:80px;width:550px;height:550px;background:radial-gradient(circle,#65d8b427,transparent 65%);pointer-events:none}
+.hero h1 {font-weight:650;letter-spacing:-2.7px;line-height:1.08;font-size:clamp(39px,4.6vw,60px);max-width:610px}
+.hero h1 em {font-style:normal;color:#baf2d7}
+.hero .eyebrow {color:#baf2d7}.hero .eyebrow:before{background:#8be5bf}
+.hero .hero-lead {color:#cedde1;max-width:550px;font-size:16px}.hero .hero-lead strong{color:#fff}
+.hero .hero-note{color:#9fbdc5}
+.hero .button{background:#c8f4dc;color:#102c37;border-color:#c8f4dc;border-radius:7px}.hero .button:hover{background:#e6fff0}
+.hero .text-link{color:#e8faf5}
+.hero .trace-card{background:#f7fbf7;color:#213e45;box-shadow:0 18px 50px rgba(0,0,0,.20);border:1px solid #bcd9d2;border-radius:13px;padding:28px 26px 23px}
+.hero .trace-top{border-color:#d1e0d9}.hero .trace-top .micro{color:#49646a}
+.hero .trace-numbers b{font-size:clamp(35px,3.8vw,53px);color:#173746}.hero .trace-numbers .zero{color:#08795f}.hero .trace-numbers span{color:#79918f}
+.hero .trace-caption,.hero .trace-foot{color:#4b686b}.hero .trace-foot{border-color:#d4e2dd}
+.hero .trace-row{border-color:#d4e2dd}.hero .trace-row-head{color:#3c5f66}.hero .trace-row-head b{color:#bd6141}.hero .trace-row-head .pass{color:#06765b}
+.hero .event-dense{background:repeating-linear-gradient(90deg,#688a91 0,#688a91 3px,transparent 3px,transparent 5px)}
+.hero .event-fixed span{background:#a5d0da}.hero .event-fixed span:first-child{background:#81d7b0}
+.hero .trace-key{color:#3d6067}.hero .trace-key span:before{background:#70cda5}.hero .trace-key span:last-child:before{background:#94c8da}
+.tech-strip{padding:20px 2px}
+.impact-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:32px 0 2px}
+.impact-tile{background:#fff;padding:24px 23px 22px;min-height:190px;border:1px solid #d5e1dc;border-radius:13px;box-shadow:0 6px 20px rgba(14,45,51,.035)}
+.impact-label{display:block;color:#367161;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.09em;margin-bottom:13px}
+.impact-number{display:block;font-weight:700;font-size:clamp(36px,3.5vw,51px);letter-spacing:-1.8px;line-height:1.04;color:#102d3c}.impact-number small{font-size:16px;letter-spacing:-.2px;color:#476c70;font-weight:500}
+.impact-tile p{margin:11px 0 0;color:#526c73;font-size:12px;line-height:1.6}.impact-tile a{color:#08775d;text-decoration-thickness:1px}
+.flowline{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:0 0 28px}
+.flowline-item{padding:17px 15px;position:relative;background:linear-gradient(150deg,#eaf4f0,#f8fbf8);border:1px solid #d6e6df;border-radius:9px}
+.flowline-step{font-family:var(--mono);font-size:9px;letter-spacing:.08em;color:#0c7960;display:block;margin-bottom:9px}
+.flowline-item strong{font-size:14px;display:block;line-height:1.3}.flowline-item small{display:block;font-size:10px;color:#60737b;margin-top:5px;line-height:1.4}
+.plain-explainer{margin:27px 0 0;background:#eaf4f0;border:1px solid #c4d9d0;border-radius:10px;overflow:hidden}
+.plain-explainer summary{cursor:pointer;font-weight:650;font-size:13px;padding:17px 21px;color:#134d45}
+.plain-explainer summary:hover{background:#dbece4}.plain-explainer[open] summary{border-bottom:1px solid #c4d9d0}
+.plain-explainer-body{padding:6px 21px 17px;color:#395c60;font-size:12px;line-height:1.72}.plain-explainer-body p{margin:11px 0 0}
+.endcap{background:linear-gradient(120deg,#0b1929,#173747);color:#f4f8f5;margin-top:24px;padding:60px 0}
+.endcap-inner{display:flex;align-items:center;justify-content:space-between;gap:36px}
+.endcap .micro{color:#a4d8c3;margin:0 0 12px}
+.endcap h2{font-size:clamp(28px,3vw,43px);line-height:1.18;letter-spacing:-1.4px;margin:0 0 13px;font-weight:600}.endcap h2 em{font-style:normal;color:#bcead4}
+.endcap p:not(.micro){font-size:13px;line-height:1.7;color:#c0d5d5;margin:0;max-width:580px}
+.endcap .button{background:#c8f4dc;color:#102c37;border-color:#c8f4dc;border-radius:8px;flex-shrink:0;min-width:230px}.endcap .button:hover{background:#e3fbea}
+@media(max-width:940px){.hero{padding:44px 32px;grid-template-columns:1fr;gap:30px}.hero h1{max-width:700px}.hero .trace-card{max-width:680px}.impact-strip{gap:9px}.impact-tile{padding:20px 17px}.endcap-inner{align-items:flex-start}}
+@media(max-width:650px){.hero{padding:37px 22px;margin-top:12px;border-radius:14px}.hero h1{font-size:clamp(36px,9vw,54px);letter-spacing:-1.8px}.hero .hero-lead{font-size:14px}.hero .trace-card{padding:21px 18px}.hero .trace-numbers b{font-size:clamp(37px,11vw,52px)}.impact-strip{grid-template-columns:1fr;gap:9px;margin:22px 0}.impact-tile{min-height:0;padding:18px 20px}.impact-number{font-size:36px}.impact-tile p{margin-top:6px}.flowline{grid-template-columns:repeat(2,minmax(0,1fr))}.flowline-item{padding:14px 11px}.endcap{padding:46px 0}.endcap-inner{display:block}.endcap .button{margin-top:25px}}
+@media(max-width:390px){.flowline{grid-template-columns:1fr}.hero .trace-numbers{gap:10px}}
+@media print{.hero{background:#153344!important;color:white!important;box-shadow:none;border-radius:0;margin-top:0;padding:26px}.hero h1,.hero .hero-lead strong{color:white!important}.hero .trace-card{background:#fff!important;color:#162b3b!important}.impact-tile{min-height:0}.endcap{display:none}}
+
   </style>
 </head>
 <body>
@@ -42,35 +92,53 @@
   <div class="wrap">
     <div class="hero">
       <div>
-        <p class="eyebrow">Personal systems project · 2026</p>
-        <h1>Making mixed-GPU inference measurable.</h1>
-        <p class="hero-lead">A 70B model. Two GPU vendors. <strong>A tracing layer that keeps the evidence intact.</strong> Python supervision and C++ instrumentation around llama.cpp, with controlled benchmarks and explicit validation.</p>
+        <p class="eyebrow">GPU systems engineering · 2026</p>
+        <h1>One 70B model.<br>Two GPU vendors.<br><em>Measured, not guessed.</em></h1>
+        <p class="hero-lead">How do you understand what actually happens when a large language model runs across an NVIDIA and an AMD GPU? <strong>I built the Python supervision and C++ tracing tools to investigate it</strong>—then fixed the recorder when it started losing evidence.</p>
         <div class="hero-actions"><a class="button" href="#case-study">Read the case study <span class="arrow" aria-hidden="true">↓</span></a><a class="text-link" href="#code">Explore the code <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false" style="vertical-align:-2px;flex-shrink:0"><path d="M2.5 10.5L10.5 2.5M3 2.5H10.5V10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
-        <p class="hero-note">CUDA + ROCm · Runtime instrumentation · Experiment reliability</p>
+        <p class="hero-note">Python orchestration / C++ instrumentation / controlled inference experiments</p>
       </div>
       <aside class="trace-card" aria-label="Trace repair result">
         <div class="trace-top"><span class="micro">The engineering result / trace loss</span><svg viewBox="0 0 28 19" fill="none" aria-hidden="true"><path d="M1 15H7V5H13V12H20V2H27" stroke="#d5ebc4" stroke-width="2"/></svg></div>
         <div class="trace-numbers"><b>22,336</b><span aria-hidden="true">→</span><b class="zero">0</b></div>
-        <p class="trace-caption">Dropped spans, initial → repaired diagnostic</p>
+        <p class="trace-caption">Dropped trace records: initial diagnostic → subsequent validated capture</p>
         <div class="trace-row"><div class="trace-row-head"><span>V1 / DETAIL BUFFER</span><b>CAPACITY EXCEEDED</b></div><div class="event-dense" aria-hidden="true"></div></div>
         <div class="trace-row"><div class="trace-row-head"><span>V2 / SEPARATE RECORDING PATHS</span><b class="pass">COMPLETE CAPTURE</b></div><div class="event-fixed" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div><p class="trace-key"><span>82,650 aggregated calls</span><span>5,222 detailed spans</span></p></div>
-        <p class="trace-foot">Frequent event calls are counted exactly. Copy, graph, and wait records retain their individual detail. Bars illustrate the recording strategy; they are not timing traces.</p>
+        <p class="trace-foot">The second capture used aggregation for repetitive calls while preserving detailed transfer evidence. Zero refers to <em>unexpected recording loss in that diagnostic</em>, not zero GPU activity. Bars are conceptual, not real timing traces.</p>
       </aside>
     </div>
     <div class="tech-strip"><strong>ENGINEERING STACK</strong><div class="tech-items"><span>Python</span><span>C++17</span><span>CUDA / HIP</span><span>Linux</span><span>llama.cpp / GGML</span></div></div>
+
+    <div class="impact-strip" aria-label="Project results at a glance">
+      <div class="impact-tile"><span class="impact-label">Equal-split mixed GPUs</span><strong class="impact-number">18.28 <small>tok/s</small></strong><p>3.76× the RTX 5090 + CPU-offload baseline for TG128. <a href="#results">See comparison</a></p></div>
+      <div class="impact-tile"><span class="impact-label">Repaired trace capture</span><strong class="impact-number">0 <small>lost</small></strong><p>Unexpected dropped records in the later accepted diagnostic, down from an earlier 22,336. <a href="#repair">See repair</a></p></div>
+      <div class="impact-tile"><span class="impact-label">Instrumentation correctness</span><strong class="impact-number">16.5M</strong><p>Bitwise-identical output logits versus the uninstrumented runtime on a fixed fixture. <a href="#validation">See validation</a></p></div>
+    </div>
     <section id="case-study" aria-labelledby="problem-title">
       <div class="section-head"><p class="section-no"><span>01</span> The system</p><div><h2 id="problem-title">One model, two backends.<br>A boundary worth understanding.</h2><p>The quantized model exceeds either GPU’s memory. llama.cpp can split its layers across NVIDIA and AMD, but understanding that execution requires reliable records of copies, waits, and graph submissions. HeteroLLM adds the tools to collect and check those records.</p></div></div>
+
+      <div class="flowline" role="img" aria-label="A representative input moves through the inference runtime, model layers on NVIDIA and AMD GPUs, host-staged tensor transfers, and repeated output-token generation">
+        <div class="flowline-item"><span class="flowline-step">01 / INPUT</span><strong>A question</strong><small>Text becomes tokens</small></div>
+        <div class="flowline-item"><span class="flowline-step">02 / EXECUTION</span><strong>70B model layers</strong><small>Placed across both GPUs</small></div>
+        <div class="flowline-item"><span class="flowline-step">03 / TRANSFER</span><strong>Host staging</strong><small>CUDA → CPU → ROCm boundary</small></div>
+        <div class="flowline-item"><span class="flowline-step">04 / OUTPUT</span><strong>Next tokens</strong><small>Repeated inference steps</small></div>
+      </div>
       <div class="problem-grid">
         <div class="specs"><div class="spec"><strong>70B</strong><span>Llama 3.3 Instruct · Q4_K_M</span></div><div class="spec"><strong>42.52 GB</strong><span>Quantized model file</span></div><div class="spec"><strong>32 GB each</strong><span>Separate GPU memory</span></div></div>
         <div class="architecture"><figure><p class="micro">Recorded equal-split configuration</p><div class="gpu-path"><div class="gpu"><small>NVIDIA · CUDA</small><h3>RTX 5090</h3><p>Transformer blocks 0–40<br>32 GB device memory</p></div><div class="staging"><span>Host-staged<br>tensor copy</span><svg viewBox="0 0 90 24" fill="none" aria-hidden="true"><path d="M0 12H85M78 6L85 12L78 18" stroke="#6c7f82" stroke-width="1.3"/></svg></div><div class="gpu"><small>AMD · ROCm</small><h3>AI PRO R9700</h3><p>Blocks 41–79 + output<br>32 GB device memory</p></div></div><figcaption>The diagram shows the layer dependency and observed host-staging route. Each backend manages its own allocations; embeddings remain on the host. The upstream runtime supplies model loading, kernels, placement, and scheduling.</figcaption></figure></div>
       </div>
     </section>
-    <section class="rule" aria-labelledby="repair-title">
+    <section class="rule" id="repair" aria-labelledby="repair-title">
       <div class="section-head"><p class="section-no"><span>02</span> The repair</p><div><h2 id="repair-title">The run completed.<br>The first trace was unusable.</h2><p>Repetitive event bookkeeping filled all 65,536 recording slots before useful copy records survived. A faster benchmark would not fix a measurement system that was losing the evidence.</p></div></div>
       <div class="repair-body">
         <ol class="steps"><li><span class="step-num">01</span><div><h3>Identify what exhausted the recorder</h3><p>The initial diagnostic dropped 22,336 spans and retained no host-stage copies. The missing records made transfer count and cost unknown.</p></div></li><li><span class="step-num">02</span><div><h3>Separate detail from repetition</h3><p>Aggregate <code>event.record_submit</code> and <code>event.synchronize</code> by backend and event kind. Preserve exact call counts and duration histograms, alongside individual routing, copy, and graph spans.</p></div></li><li><span class="step-num">03</span><div><h3>Make incomplete evidence fail validation</h3><p>Reject loss, unfinished operations, overflow, invalid metadata, and inconsistent counters. A trace becomes usable only when its completeness checks pass.</p></div></li></ol>
         <aside class="repair-evidence"><p class="micro">Accepted v2 diagnostic</p><div class="proof-line"><strong>5,222</strong><span>Detailed spans retained</span></div><div class="proof-line"><strong>82,650</strong><span>Event calls counted exactly</span></div><div class="proof-line"><strong>137</strong><span>Host-staged copies observed</span></div><div class="proof-line"><strong>36.03 MiB</strong><span>Logical tensor payload</span></div><p class="note">One complete diagnostic, including warmup. Logical payload counts each parent copy once; it does not measure physical PCIe traffic.</p><a class="evidence-link" href="./evidence/recorder-summary.json">Inspect the recorder evidence <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false" style="vertical-align:-2px;flex-shrink:0"><path d="M2.5 10.5L10.5 2.5M3 2.5H10.5V10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></a></aside>
       </div>
+
+      <details class="plain-explainer">
+        <summary>Why does the repaired tracer say “zero dropped”?</summary>
+        <div class="plain-explainer-body"><p>The original recorder stored individual events in a fixed 65,536-slot buffer. Its earlier diagnostic overflowed, losing another 22,336 records. The revised recorder keeps essential copies and waits as individual spans, but summarizes high-frequency repeated calls separately.</p><p>In a <strong>later diagnostic</strong>, it kept 5,222 detailed spans and aggregated 82,650 calls with no unexpected losses. This does not mean GPU transfers stopped, or that every future run is guaranteed loss-free. The two measurements are from different diagnostics.</p></div>
+      </details>
       <div id="code" class="code-panel">
         <div class="code-tabs" role="group" aria-label="Choose a source excerpt"><button type="button" aria-pressed="true" data-source="recorder">C++ recorder</button><button type="button" aria-pressed="false" data-source="validation">Trace validation</button><button type="button" aria-pressed="false" data-source="supervisor">Process cleanup</button></div>
         <div class="code-inner"><p id="code-path" class="code-path">instrumentation/v2/heterollm-cpu-trace.h</p><pre aria-label="Source code excerpt"><code id="code-content">void aggregate_end(size_t slot, uint64_t elapsed) {
@@ -121,7 +189,7 @@
     </section>
   </div>
 </main>
-<footer><div class="wrap footer-inner"><div><span class="footer-brand">Jae / HeteroLLM</span><p>Python · C++ · GPU systems<br>Research status through November 3, 2026</p></div><div class="footer-note"><p>Developed with AI assistance. Source ownership, upstream attribution, measurement scope, and reproduction limits are documented in the repository.</p><p><a href="./evidence/results.json">Results</a> · <a href="./evidence/recorder-summary.json">Recorder evidence</a> · <a href="https://github.com/coffeescript53/HeteroLLM" target="_blank" rel="noopener noreferrer">GitHub repository</a></p></div></div></footer>
+<div class="endcap"><div class="wrap endcap-inner"><div><p class="micro">Inspect the engineering</p><h2>Results are useful.<br><em>Reproducible evidence is better.</em></h2><p>Read the implementation, baseline measurements, caveats, and validation in the repository.</p></div><a class="button" href="https://github.com/coffeescript53/HeteroLLM" target="_blank" rel="noopener noreferrer">Explore HeteroLLM on GitHub <span class="arrow" aria-hidden="true">↗</span></a></div></div>
 <script>
   'use strict';
   const benchmarks = [{"key":"A","label":"RTX 5090 + RAM","note":"CPU offload","pp512":{"mean":221.37684319864942,"sample_sd":0.6662243587077155},"tg128":{"mean":4.858204568358838,"sample_sd":0.0066690071408571465}},{"key":"B","label":"R9700 + RAM","note":"CPU offload","pp512":{"mean":174.011604791199,"sample_sd":0.10334380522193261},"tg128":{"mean":4.593703920787979,"sample_sd":0.0050179397829194505}},{"key":"D","label":"Default mixed","note":"Both GPUs","pp512":{"mean":705.5730011127871,"sample_sd":0.9186115960108787},"tg128":{"mean":18.05168964132519,"sample_sd":0.03020758765342077}},{"key":"E","label":"Equal mixed","note":"Both GPUs \u00b7 equal split","pp512":{"mean":717.8580365897145,"sample_sd":2.809219202989174},"tg128":{"mean":18.282254694384267,"sample_sd":0.006454428169013112}}];
