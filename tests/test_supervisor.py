@@ -306,9 +306,21 @@ class SupervisorTests(unittest.TestCase):
         self.assertEqual(r['reason'],'unexpected_loading_mode')
 
     def test_real_loading_line_split_during_child_execution(self):
+        # This test checks line-fragment handling, not /proc memory coverage.
+        # Hosted CI kernels may omit /proc/<pid>/status counters transiently,
+        # before/during exec. Use isolated synthetic memory/map samples here;
+        # the other supervisor tests still exercise the real Linux samplers.
+        def stable_fast_sample(pid):
+            return {'memory':{'MemAvailable':64*1024**3,'HardwareCorrupted':0},
+                    'swap_used':0,'oom_kill':0,
+                    'process':{'start_ticks':1,'VmRSS':0,'VmHWM':0}}
+        def stable_maps_sample(pid, model):
+            return {'model_mappings':[]}
         split=REAL_LINE.index(b'none')+2
         code=f'os.write(2,{REAL_LINE[:split]!r});time.sleep(.15);os.write(2,{REAL_LINE[split:]!r});print("42",flush=True);time.sleep(.05)'
-        r,s=self.run_case(code)
+        with patch(__name__+'.fast_sample',side_effect=stable_fast_sample), \
+             patch(__name__+'.maps_sample',side_effect=stable_maps_sample):
+            r,s=self.run_case(code)
         self.assertEqual(r['status'],'passed',r)
         self.assertEqual(s['stderr.txt'].encode(),REAL_LINE)
 

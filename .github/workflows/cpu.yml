@@ -19,6 +19,9 @@ jobs:
           python-version: '3.12'
       - name: Recompute published summaries
         run: python3 scripts/demo.py
+      # Windows ZIP extraction can discard this fixture's Unix executable bit.
+      - name: Prepare CPU-only executable fixture
+        run: chmod +x tests/fixtures/fake_runtime.py
       - name: Linux host checks
         run: bash scripts/test-cpu.sh
       - name: Standalone C++ recorder
